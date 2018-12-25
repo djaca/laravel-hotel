@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Room;
 use App\RoomType;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -28,5 +29,6 @@ class RoomTest extends TestCase
         $this->assertEquals($attributes['comment'], $room->comment);
         $this->assertTrue($room->available);
         $this->assertInstanceOf(RoomType::class, $room->type);
+        $this->assertInstanceOf(Collection::class, $room->reservations);
     }
 }

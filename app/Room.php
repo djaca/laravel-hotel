@@ -19,4 +19,12 @@ class Room extends Model
     {
         return $this->belongsTo(RoomType::class, 'type_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function reservations()
+    {
+        return $this->belongsToMany(Reservation::class);
+    }
 }
