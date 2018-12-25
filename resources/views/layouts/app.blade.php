@@ -22,11 +22,12 @@
 </head>
 <body>
 <div id="app">
-    {{--<navbar></navbar>--}}
+    <navbar></navbar>
 
     <section class="">
         <div class="columns" style="margin: 2rem 0;">
             <div class="column is-2">
+                sidebar
                 {{--<sidebar></sidebar>--}}
             </div>
             <div class="column is-10">
