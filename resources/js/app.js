@@ -1,6 +1,7 @@
 require('./bootstrap');
 import router from './routes'
 import Navbar from './components/Navbar'
+import Sidebar from './components/Sidebar'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -12,6 +13,7 @@ const app = new Vue({
     el: '#app',
     router,
     components: {
-        Navbar
+        Navbar,
+        Sidebar,
     }
 });
