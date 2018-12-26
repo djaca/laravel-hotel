@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
-    protected $fillable = ['name', 'comment'];
+    protected $fillable = ['name', 'comment', 'type_id', 'available'];
 
     protected $casts = [
         'available' => 'Boolean'

@@ -7,6 +7,6 @@ $factory->define(App\RoomType::class, function (Faker $faker) {
         'name'        => $faker->words(2, true),
         'description' => $faker->sentence,
         'capacity'    => $faker->numberBetween(1, 5),
-        'price'       => $faker->randomFloat(2)
+        'price'       => $faker->randomFloat(2, 100, 600)
     ];
 });

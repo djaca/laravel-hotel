@@ -12,5 +12,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UsersTableSeeder::class);
+        factory(\App\RoomType::class, 4)->create()->each(function ($type) {
+            factory(\App\Room::class)->create(['type_id' => $type->id]);
+        });
+
+        $room = \App\Room::find(1)->update(['available' => false]);
+        factory(\App\Reservation::class)->create()->rooms()->attach(1);
     }
 }
