@@ -30,3 +30,5 @@ Route::post('guests', 'Api\GuestsController@store');
 Route::get('guests/{guest}', 'Api\GuestsController@show');
 Route::patch('guests/{guest}', 'Api\GuestsController@update');
 Route::delete('guests/{guest}', 'Api\GuestsController@destroy');
+
+Route::get('reservations', 'Api\ReservationsController@index');
