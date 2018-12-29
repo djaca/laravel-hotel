@@ -18,6 +18,7 @@
                         :total="total"
                         :per-page="perPage"
                         @page-change="onPageChange"
+                        @select="selected"
                     >
                         <template slot-scope="props">
                             <b-table-column field="id" label="ID" width="60">
@@ -111,6 +112,10 @@
                     .finally(() => {
                         this.loadingGuests = false
                     })
+            },
+
+            selected (guest) {
+                this.$router.push({ path: `/guests/${guest.id}` })
             }
         },
 
@@ -121,5 +126,7 @@
 </script>
 
 <style scoped>
-
+    table td {
+        cursor: pointer;
+    }
 </style>

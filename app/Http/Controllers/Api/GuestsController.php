@@ -30,4 +30,9 @@ class GuestsController extends Controller
             'guest'   => $guest
         ]);
     }
+
+    public function show(Guest $guest)
+    {
+        return response()->json($guest);
+    }
 }
