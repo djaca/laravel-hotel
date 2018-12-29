@@ -52,4 +52,14 @@ class GuestsController extends Controller
             'guest'    => $guest
         ]);
     }
+
+    public function destroy(Guest $guest)
+    {
+        $guest->delete();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Guest deleted'
+        ]);
+    }
 }

@@ -41,7 +41,7 @@
                             <button
                                 class="button is-medium is-danger is-outlined"
                                 style="border-radius: 50%"
-                                @click=""
+                                @click="confirmDelete"
                             >
                                 <b-icon icon="delete" size="is-small"></b-icon>
                             </button>
@@ -100,6 +100,40 @@
                         guest: this.guest
                     }
                 })
+            },
+
+            confirmDelete () {
+                this.$dialog.confirm({
+                    title: `Deleting guest: ${this.guest.name}`,
+                    message: 'Are you sure you want to <b>delete</b> this guest? This action cannot be undone.',
+                    confirmText: 'Delete Guest',
+                    type: 'is-danger',
+                    hasIcon: true,
+                    onConfirm: () => {
+                        this.delete()
+                    }
+                })
+            },
+
+            delete () {
+                axios.delete(`/api/guests/${this.guest.id}`)
+                    .then(({data}) => {
+                        this.$toast.open({
+                            message: data.message,
+                            type: 'is-success'
+                        })
+
+                        this.$router.push({ path: '/guests' })
+                    })
+                    .catch(err => {
+                        this.$toast.open({
+                            message: err.response.data.message,
+                            type: 'is-danger'
+                        })
+                    })
+                    .finally(() => {
+                        this.loading = false
+                    })
             }
         },
 

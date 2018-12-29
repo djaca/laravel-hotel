@@ -2458,6 +2458,43 @@ __webpack_require__.r(__webpack_exports__);
           guest: this.guest
         }
       });
+    },
+    confirmDelete: function confirmDelete() {
+      var _this3 = this;
+
+      this.$dialog.confirm({
+        title: "Deleting guest: ".concat(this.guest.name),
+        message: 'Are you sure you want to <b>delete</b> this guest? This action cannot be undone.',
+        confirmText: 'Delete Guest',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: function onConfirm() {
+          _this3.delete();
+        }
+      });
+    },
+    delete: function _delete() {
+      var _this4 = this;
+
+      axios.delete("/api/guests/".concat(this.guest.id)).then(function (_ref2) {
+        var data = _ref2.data;
+
+        _this4.$toast.open({
+          message: data.message,
+          type: 'is-success'
+        });
+
+        _this4.$router.push({
+          path: '/guests'
+        });
+      }).catch(function (err) {
+        _this4.$toast.open({
+          message: err.response.data.message,
+          type: 'is-danger'
+        });
+      }).finally(function () {
+        _this4.loading = false;
+      });
     }
   },
   watch: {
@@ -39169,7 +39206,7 @@ var render = function() {
                       {
                         staticClass: "button is-medium is-danger is-outlined",
                         staticStyle: { "border-radius": "50%" },
-                        on: { click: function($event) {} }
+                        on: { click: _vm.confirmDelete }
                       },
                       [
                         _c("b-icon", {
