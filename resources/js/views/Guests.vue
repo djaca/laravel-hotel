@@ -37,6 +37,14 @@
                             </b-table-column>
                         </template>
                     </b-table>
+
+                    <button
+                        class="button is-medium is-info is-outlined"
+                        style="border-radius: 50%"
+                        @click="openNewGuestModal"
+                    >
+                        <b-icon icon="plus" size="is-small"></b-icon>
+                    </button>
                 </div>
             </div>
         </div>
@@ -44,52 +52,72 @@
 </template>
 
 <script>
-  export default {
-    name: 'Guests',
+    import GuestForm from './../components/guests/GuestForm'
 
-      data () {
-          return {
-              loading: false,
-              loadingGuests: false,
-              guests: [],
-              total: 0,
-              page: 1,
-              perPage: 0
-          }
-      },
+    export default {
+        name: 'Guests',
 
-      methods: {
-          onPageChange (page) {
-              this.page = page
+        data () {
+            return {
+                loading: false,
+                loadingGuests: false,
+                guests: [],
+                total: 0,
+                page: 1,
+                perPage: 0
+            }
+        },
 
-              this.getGuests()
-          },
+        methods: {
+            openNewGuestModal () {
+                this.$modal.open({
+                    parent: this,
+                    component: GuestForm,
+                    hasModalCard: true,
+                    width: 960,
+                    events: {
+                        'new-guest': guest => {
+                            this.total++
 
-          getGuests () {
-              this.loadingGuests = true
+                            if (this.guests.length < this.perPage) {
+                                this.guests.push(guest)
+                            }
+                        }
+                    }
+                })
+            },
 
-              axios.get(`/api/guests?page=${this.page}`)
-                  .then(({data}) => {
-                      this.guests = data.data
-                      this.perPage = data.per_page
-                      this.total = data.total
-                  })
-                  .catch(err => {
-                      this.$toast.open({
-                          message: err.response.data.message,
-                          type: 'is-danger'
-                      })
-                  })
-                  .finally(() => {
-                      this.loadingGuests = false
-                  })
-          }
-      },
+            onPageChange (page) {
+                this.page = page
 
-      mounted () {
-        this.getGuests()
-      }
-  }
+                this.getGuests()
+            },
+
+            getGuests () {
+                this.loadingGuests = true
+
+                axios.get(`/api/guests?page=${this.page}`)
+                    .then(({data}) => {
+                        this.guests = data.data
+                        this.perPage = data.per_page
+                        this.total = data.total
+                    })
+                    .catch(err => {
+                        this.$toast.open({
+                            message: err.response.data.message,
+                            type: 'is-danger'
+                        })
+                    })
+                    .finally(() => {
+                        this.loadingGuests = false
+                    })
+            }
+        },
+
+        mounted () {
+            this.getGuests()
+        }
+    }
 </script>
 
 <style scoped>
