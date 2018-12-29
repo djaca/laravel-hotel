@@ -24,3 +24,5 @@ Route::delete('rooms/{room}', 'Api\RoomsController@destroy');
 
 Route::get('room-types', 'Api\RoomTypesController@index');
 Route::post('room-types', 'Api\RoomTypesController@store');
+
+Route::get('guests', 'Api\GuestsController@index');
