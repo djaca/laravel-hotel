@@ -35,4 +35,21 @@ class GuestsController extends Controller
     {
         return response()->json($guest);
     }
+
+    public function update(Guest $guest)
+    {
+        request()->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone' => 'required',
+        ]);
+
+        $guest->update(request()->all());
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Guest updated successfully',
+            'guest'    => $guest
+        ]);
+    }
 }

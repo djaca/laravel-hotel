@@ -1942,6 +1942,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'GuestForm',
+  props: ['guest'],
   data: function data() {
     return {
       formData: {
@@ -1955,10 +1956,13 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     canSubmit: function canSubmit() {
       return this.formData.first_name !== '' && this.formData.last_name !== '' && this.formData.phone !== '';
+    },
+    isEditing: function isEditing() {
+      return !!this.guest;
     }
   },
   methods: {
-    submit: function submit() {
+    addGuest: function addGuest() {
       var _this = this;
 
       axios.post('/api/guests', this.formData).then(function (_ref) {
@@ -1978,6 +1982,43 @@ __webpack_require__.r(__webpack_exports__);
           type: 'is-danger'
         });
       });
+    },
+    updateGuest: function updateGuest() {
+      var _this2 = this;
+
+      this.formData._method = 'patch';
+      axios.post("/api/guests/".concat(this.guest.id), this.formData).then(function (_ref2) {
+        var data = _ref2.data;
+
+        _this2.$emit('guest-updated', data.guest);
+
+        _this2.$parent.close();
+
+        _this2.$toast.open({
+          message: data.message,
+          type: 'is-success'
+        });
+      }).catch(function (err) {
+        _this2.$toast.open({
+          message: err.response.data.message,
+          type: 'is-danger'
+        });
+      });
+    },
+    submit: function submit() {
+      if (this.isEditing) {
+        return this.updateGuest();
+      }
+
+      this.addGuest();
+    }
+  },
+  mounted: function mounted() {
+    if (this.isEditing) {
+      this.formData.first_name = this.guest.first_name;
+      this.formData.last_name = this.guest.last_name;
+      this.formData.email = this.guest.email;
+      this.formData.phone = this.guest.phone;
     }
   }
 });
@@ -2318,6 +2359,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_guests_GuestForm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/guests/GuestForm */ "./resources/js/components/guests/GuestForm.vue");
 //
 //
 //
@@ -2357,6 +2399,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Guest',
   data: function data() {
@@ -2380,6 +2439,24 @@ __webpack_require__.r(__webpack_exports__);
         });
       }).finally(function () {
         _this.loading = false;
+      });
+    },
+    openEditGuestModal: function openEditGuestModal() {
+      var _this2 = this;
+
+      this.$modal.open({
+        parent: this,
+        component: _components_guests_GuestForm__WEBPACK_IMPORTED_MODULE_0__["default"],
+        hasModalCard: true,
+        width: 960,
+        events: {
+          'guest-updated': function guestUpdated(guest) {
+            _this2.guest = guest;
+          }
+        },
+        props: {
+          guest: this.guest
+        }
       });
     }
   },
@@ -39070,7 +39147,37 @@ var render = function() {
                           _c("td", [_vm._v(_vm._s(_vm.guest.email))])
                         ])
                       ])
-                    ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "button is-medium is-info is-outlined",
+                        staticStyle: { "border-radius": "50%" },
+                        on: { click: _vm.openEditGuestModal }
+                      },
+                      [
+                        _c("b-icon", {
+                          attrs: { icon: "pencil", size: "is-small" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "button is-medium is-danger is-outlined",
+                        staticStyle: { "border-radius": "50%" },
+                        on: { click: function($event) {} }
+                      },
+                      [
+                        _c("b-icon", {
+                          attrs: { icon: "delete", size: "is-small" }
+                        })
+                      ],
+                      1
+                    )
                   ])
                 ])
               ])

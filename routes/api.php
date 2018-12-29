@@ -28,3 +28,4 @@ Route::post('room-types', 'Api\RoomTypesController@store');
 Route::get('guests', 'Api\GuestsController@index');
 Route::post('guests', 'Api\GuestsController@store');
 Route::get('guests/{guest}', 'Api\GuestsController@show');
+Route::patch('guests/{guest}', 'Api\GuestsController@update');

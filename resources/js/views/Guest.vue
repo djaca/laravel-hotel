@@ -29,6 +29,22 @@
                                 </tr>
                                 </tbody>
                             </table>
+
+                            <button
+                                class="button is-medium is-info is-outlined"
+                                style="border-radius: 50%"
+                                @click="openEditGuestModal"
+                            >
+                                <b-icon icon="pencil" size="is-small"></b-icon>
+                            </button>
+
+                            <button
+                                class="button is-medium is-danger is-outlined"
+                                style="border-radius: 50%"
+                                @click=""
+                            >
+                                <b-icon icon="delete" size="is-small"></b-icon>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -38,6 +54,8 @@
 </template>
 
 <script>
+    import GuestForm from '../components/guests/GuestForm'
+
     export default {
         name: 'Guest',
 
@@ -65,6 +83,23 @@
                     .finally(() => {
                         this.loading = false
                     })
+            },
+
+            openEditGuestModal () {
+                this.$modal.open({
+                    parent: this,
+                    component: GuestForm,
+                    hasModalCard: true,
+                    width: 960,
+                    events: {
+                        'guest-updated': guest => {
+                            this.guest = guest
+                        }
+                    },
+                    props: {
+                        guest: this.guest
+                    }
+                })
             }
         },
 

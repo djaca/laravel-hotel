@@ -58,6 +58,8 @@
     export default {
         name: 'GuestForm',
 
+        props: ['guest'],
+
         data () {
             return {
                 formData: {
@@ -72,11 +74,15 @@
         computed: {
             canSubmit () {
                 return this.formData.first_name !== '' && this.formData.last_name !== '' && this.formData.phone !== ''
-            }
+            },
+
+            isEditing () {
+                return !!this.guest
+            },
         },
 
         methods: {
-            submit () {
+            addGuest () {
                 axios.post('/api/guests', this.formData)
                     .then(({data}) => {
                         this.$emit('new-guest', data.guest)
@@ -94,7 +100,46 @@
                             type: 'is-danger'
                         })
                     })
+            },
+
+            updateGuest () {
+                this.formData._method = 'patch'
+
+                axios.post(`/api/guests/${this.guest.id}`, this.formData)
+                    .then(({data}) => {
+                        this.$emit('guest-updated', data.guest)
+
+                        this.$parent.close()
+
+                        this.$toast.open({
+                            message: data.message,
+                            type: 'is-success'
+                        })
+                    })
+                    .catch(err => {
+                        this.$toast.open({
+                            message: err.response.data.message,
+                            type: 'is-danger'
+                        })
+                    })
+            },
+
+            submit () {
+                if (this.isEditing) {
+                    return this.updateGuest()
+                }
+
+                this.addGuest ()
             }
         },
+
+        mounted () {
+            if (this.isEditing) {
+                this.formData.first_name = this.guest.first_name
+                this.formData.last_name = this.guest.last_name
+                this.formData.email = this.guest.email
+                this.formData.phone = this.guest.phone
+            }
+        }
     }
 </script>
