@@ -1,0 +1,132 @@
+<template>
+    <section>
+        <b-loading :active.sync="loading"></b-loading>
+
+        <div class="columns" v-show="guests.length > 0">
+            <div class="column is-8">
+                <div class="box">
+                    <div class="card-header-title is-centered">Guests</div>
+
+                    <b-table
+                        :data="guests"
+                        :loading="loadingGuests"
+                        selectable
+                        striped
+                        hoverable
+                        paginated
+                        backend-pagination
+                        :total="total"
+                        :per-page="perPage"
+                        @page-change="onPageChange"
+                        @select="selected"
+                    >
+                        <template slot-scope="props">
+                            <b-table-column field="id" label="ID" width="60">
+                                {{ props.row.id }}
+                            </b-table-column>
+
+                            <b-table-column field="name" label="Name">
+                                {{ props.row.name }}
+                            </b-table-column>
+
+                            <b-table-column field="email" label="Email">
+                                {{ props.row.email }}
+                            </b-table-column>
+
+                            <b-table-column field="phone" label="Phone">
+                                {{ props.row.phone }}
+                            </b-table-column>
+                        </template>
+                    </b-table>
+
+                    <button
+                        class="button is-medium is-info is-outlined"
+                        style="border-radius: 50%"
+                        @click="openNewGuestModal"
+                    >
+                        <b-icon icon="plus" size="is-small"></b-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    import GuestForm from './../components/guests/GuestForm'
+
+    export default {
+        name: 'Guests',
+
+        data () {
+            return {
+                loading: false,
+                loadingGuests: false,
+                guests: [],
+                total: 0,
+                page: 1,
+                perPage: 0
+            }
+        },
+
+        methods: {
+            openNewGuestModal () {
+                this.$modal.open({
+                    parent: this,
+                    component: GuestForm,
+                    hasModalCard: true,
+                    width: 960,
+                    events: {
+                        'new-guest': guest => {
+                            this.total++
+
+                            if (this.guests.length < this.perPage) {
+                                this.guests.push(guest)
+                            }
+                        }
+                    }
+                })
+            },
+
+            onPageChange (page) {
+                this.page = page
+
+                this.getGuests()
+            },
+
+            getGuests () {
+                this.loadingGuests = true
+
+                axios.get(`/api/guests?page=${this.page}`)
+                    .then(({data}) => {
+                        this.guests = data.data
+                        this.perPage = data.per_page
+                        this.total = data.total
+                    })
+                    .catch(err => {
+                        this.$toast.open({
+                            message: err.response.data.message,
+                            type: 'is-danger'
+                        })
+                    })
+                    .finally(() => {
+                        this.loadingGuests = false
+                    })
+            },
+
+            selected (guest) {
+                this.$router.push({ path: `/guests/${guest.id}` })
+            }
+        },
+
+        mounted () {
+            this.getGuests()
+        }
+    }
+</script>
+
+<style scoped>
+    table td {
+        cursor: pointer;
+    }
+</style>
