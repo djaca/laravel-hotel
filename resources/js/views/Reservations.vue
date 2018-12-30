@@ -1,15 +1,13 @@
 <template>
     <section>
-        <b-loading :active.sync="loading"></b-loading>
-
-        <div class="columns" v-show="reservations.length > 0">
+        <div class="columns">
             <div class="column is-8">
                 <div class="box">
                     <div class="card-header-title is-centered">Reservations</div>
 
                     <b-table
                         :data="reservations"
-                        :loading="loadingReservations"
+                        :loading="loading"
                         selectable
                         striped
                         hoverable
@@ -67,7 +65,7 @@
         data () {
             return {
                 loading: false,
-                loadingReservations: false,
+                loading: false,
                 reservations: [],
                 total: 0,
                 page: 1,
@@ -83,7 +81,7 @@
             },
 
             getReservations () {
-                this.loadingReservations = true
+                this.loading = true
 
                 axios.get(`/api/reservations?page=${this.page}`)
                     .then(({data}) => {
@@ -98,7 +96,7 @@
                         })
                     })
                     .finally(() => {
-                        this.loadingReservations = false
+                        this.loading = false
                     })
             },
 

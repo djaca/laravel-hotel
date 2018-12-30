@@ -2855,8 +2855,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2920,14 +2920,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Reservations',
   data: function data() {
-    return {
-      loading: false,
-      loadingReservations: false,
-      reservations: [],
-      total: 0,
-      page: 1,
-      perPage: 0
-    };
+    var _ref;
+
+    return _ref = {
+      loading: false
+    }, _defineProperty(_ref, "loading", false), _defineProperty(_ref, "reservations", []), _defineProperty(_ref, "total", 0), _defineProperty(_ref, "page", 1), _defineProperty(_ref, "perPage", 0), _ref;
   },
   methods: {
     onPageChange: function onPageChange(page) {
@@ -2937,9 +2934,9 @@ __webpack_require__.r(__webpack_exports__);
     getReservations: function getReservations() {
       var _this = this;
 
-      this.loadingReservations = true;
-      axios.get("/api/reservations?page=".concat(this.page)).then(function (_ref) {
-        var data = _ref.data;
+      this.loading = true;
+      axios.get("/api/reservations?page=".concat(this.page)).then(function (_ref2) {
+        var data = _ref2.data;
         _this.reservations = data.data;
         _this.perPage = data.per_page;
         _this.total = data.total;
@@ -2949,7 +2946,7 @@ __webpack_require__.r(__webpack_exports__);
           type: 'is-danger'
         });
       }).finally(function () {
-        _this.loadingReservations = false;
+        _this.loading = false;
       });
     },
     selected: function selected(reservation) {
@@ -39998,176 +39995,147 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "section",
-    [
-      _c("b-loading", {
-        attrs: { active: _vm.loading },
-        on: {
-          "update:active": function($event) {
-            _vm.loading = $event
-          }
-        }
-      }),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.reservations.length > 0,
-              expression: "reservations.length > 0"
-            }
-          ],
-          staticClass: "columns"
-        },
-        [
-          _c("div", { staticClass: "column is-8" }, [
-            _c(
-              "div",
-              { staticClass: "box" },
-              [
-                _c("div", { staticClass: "card-header-title is-centered" }, [
-                  _vm._v("Reservations")
-                ]),
-                _vm._v(" "),
-                _c("b-table", {
-                  attrs: {
-                    data: _vm.reservations,
-                    loading: _vm.loadingReservations,
-                    selectable: "",
-                    striped: "",
-                    hoverable: "",
-                    paginated: "",
-                    "backend-pagination": "",
-                    total: _vm.total,
-                    "per-page": _vm.perPage
-                  },
-                  on: { "page-change": _vm.onPageChange, select: _vm.selected },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _c(
-                            "b-table-column",
-                            {
-                              attrs: { field: "id", label: "ID", width: "60" }
-                            },
-                            [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(props.row.id) +
-                                  "\n                        "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "b-table-column",
-                            { attrs: { field: "guest", label: "Guest" } },
-                            [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(props.row.guest.name) +
-                                  "\n                        "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "b-table-column",
-                            { attrs: { field: "room", label: "Room" } },
-                            [
-                              _c(
-                                "b-taglist",
-                                [
-                                  _vm._l(props.row.rooms, function(room) {
-                                    return [
-                                      _c(
-                                        "b-tag",
-                                        { attrs: { type: "is-primary" } },
-                                        [_vm._v(_vm._s(room.name))]
-                                      )
-                                    ]
-                                  })
-                                ],
-                                2
-                              )
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "b-table-column",
-                            {
-                              attrs: {
-                                field: "start_date",
-                                label: "Check In",
-                                centered: ""
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(
-                                    new Date(
-                                      props.row.start_date
-                                    ).toLocaleDateString()
-                                  ) +
-                                  "\n                        "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "b-table-column",
-                            {
-                              attrs: {
-                                field: "end_date",
-                                label: "Check Out",
-                                centered: ""
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(
-                                    new Date(
-                                      props.row.end_date
-                                    ).toLocaleDateString()
-                                  ) +
-                                  "\n                        "
-                              )
-                            ]
+  return _c("section", [
+    _c("div", { staticClass: "columns" }, [
+      _c("div", { staticClass: "column is-8" }, [
+        _c(
+          "div",
+          { staticClass: "box" },
+          [
+            _c("div", { staticClass: "card-header-title is-centered" }, [
+              _vm._v("Reservations")
+            ]),
+            _vm._v(" "),
+            _c("b-table", {
+              attrs: {
+                data: _vm.reservations,
+                loading: _vm.loading,
+                selectable: "",
+                striped: "",
+                hoverable: "",
+                paginated: "",
+                "backend-pagination": "",
+                total: _vm.total,
+                "per-page": _vm.perPage
+              },
+              on: { "page-change": _vm.onPageChange, select: _vm.selected },
+              scopedSlots: _vm._u([
+                {
+                  key: "default",
+                  fn: function(props) {
+                    return [
+                      _c(
+                        "b-table-column",
+                        { attrs: { field: "id", label: "ID", width: "60" } },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(props.row.id) +
+                              "\n                        "
                           )
                         ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "button is-medium is-info is-outlined",
-                    staticStyle: { "border-radius": "50%" },
-                    on: { click: function($event) {} }
-                  },
-                  [_c("b-icon", { attrs: { icon: "plus", size: "is-small" } })],
-                  1
-                )
-              ],
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-table-column",
+                        { attrs: { field: "guest", label: "Guest" } },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(props.row.guest.name) +
+                              "\n                        "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-table-column",
+                        { attrs: { field: "room", label: "Room" } },
+                        [
+                          _c(
+                            "b-taglist",
+                            [
+                              _vm._l(props.row.rooms, function(room) {
+                                return [
+                                  _c(
+                                    "b-tag",
+                                    { attrs: { type: "is-primary" } },
+                                    [_vm._v(_vm._s(room.name))]
+                                  )
+                                ]
+                              })
+                            ],
+                            2
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-table-column",
+                        {
+                          attrs: {
+                            field: "start_date",
+                            label: "Check In",
+                            centered: ""
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(
+                                new Date(
+                                  props.row.start_date
+                                ).toLocaleDateString()
+                              ) +
+                              "\n                        "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-table-column",
+                        {
+                          attrs: {
+                            field: "end_date",
+                            label: "Check Out",
+                            centered: ""
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(
+                                new Date(
+                                  props.row.end_date
+                                ).toLocaleDateString()
+                              ) +
+                              "\n                        "
+                          )
+                        ]
+                      )
+                    ]
+                  }
+                }
+              ])
+            }),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "button is-medium is-info is-outlined",
+                staticStyle: { "border-radius": "50%" },
+                on: { click: function($event) {} }
+              },
+              [_c("b-icon", { attrs: { icon: "plus", size: "is-small" } })],
               1
             )
-          ])
-        ]
-      )
-    ],
-    1
-  )
+          ],
+          1
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
