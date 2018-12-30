@@ -93,15 +93,14 @@
         computed: {
             formData () {
                 return {
-                    guest_id: '',
-                    start_date: '',
-                    end_date: '',
-                    rooms: []
+                    guest_id: this.selectedGuest ? this.selectedGuest.id : '',
+                    start_date: this.checkIn ? this.$moment(this.checkIn).format("YYYY-MM-DD") : null,
+                    end_date: this.checkIn ? this.$moment(this.checkOut).format("YYYY-MM-DD") : null,
+                    rooms: this.selectedRooms.map(r => r.id)
                 }
             },
             canSubmit () {
-                return true
-                // return this.formData.first_name !== '' && this.formData.last_name !== '' && this.formData.phone !== ''
+                return this.formData.guest_id !== '' && this.formData.start_date && this.formData.end_date && this.formData.rooms.length > 0
             },
 
             isEditing () {
@@ -137,11 +136,7 @@
             }, 500),
 
             checkRooms () {
-                const formData = {
-                    'start_date': (this.checkIn.getMonth() + 1) + '-' + this.checkIn.getDate() + '-' +  this.checkIn.getFullYear(),
-                    'end_date': (this.checkOut.getMonth() + 1) + '-' + this.checkOut.getDate() + '-' +  this.checkOut.getFullYear()
-                }
-                axios.get('/api/rooms', {params: formData})
+                axios.get('/api/rooms', {params: {start_date: this.formData.start_date, end_date: this.formData.end_date}})
                     .then(({data}) => {
                         this.rooms = data
                     })

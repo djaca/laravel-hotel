@@ -1,5 +1,6 @@
 import VueRouter from 'vue-router'
 import Buefy from 'buefy'
+import moment from 'moment'
 
 window._ = require('lodash');
 
@@ -7,6 +8,7 @@ window.Vue = require('vue');
 
 Vue.use(VueRouter)
 Vue.use(Buefy)
+Vue.prototype.$moment = moment
 
 
 /**
