@@ -1786,6 +1786,83 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RoomTypesTabs.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RoomTypesTabs.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var lodash_groupBy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/groupBy */ "./node_modules/lodash/groupBy.js");
+/* harmony import */ var lodash_groupBy__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_groupBy__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'RoomTypesTabs',
+  props: ['rooms'],
+  data: function data() {
+    return {
+      activeTab: 0,
+      types: []
+    };
+  },
+  computed: {
+    tabs: function tabs() {
+      var tabs = this.types.map(function (t) {
+        return {
+          label: t.name,
+          id: t.id,
+          data: []
+        };
+      });
+      var grouped = lodash_groupBy__WEBPACK_IMPORTED_MODULE_0___default()(this.rooms, function (room) {
+        return room.type.id;
+      });
+      tabs.forEach(function (t) {
+        if (t.id in grouped) {
+          t.data = grouped[t.id];
+        }
+      });
+      return tabs;
+    }
+  },
+  methods: {
+    getTypes: function getTypes() {
+      var _this = this;
+
+      axios.get('/api/room-types').then(function (_ref) {
+        var data = _ref.data;
+        _this.types = data;
+      }).catch(function (err) {
+        _this.$toast.open({
+          message: err.response.data.message,
+          type: 'is-danger'
+        });
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.getTypes();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Sidebar.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Sidebar.vue?vue&type=script&lang=js& ***!
@@ -2025,6 +2102,225 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../RoomTypesTabs */ "./resources/js/components/RoomTypesTabs.vue");
+/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash/debounce */ "./node_modules/lodash/debounce.js");
+/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_debounce__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'ReservationForm',
+  components: {
+    RoomTypesTabs: _RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  props: ['reservation'],
+  data: function data() {
+    return {
+      loadingGuests: false,
+      guests: [],
+      selectedGuest: null,
+      name: '',
+      checkIn: null,
+      checkOut: null,
+      activeTab: 0,
+      selectedRooms: [],
+      rooms: []
+    };
+  },
+  computed: {
+    formData: function formData() {
+      return {
+        guest_id: '',
+        start_date: '',
+        end_date: '',
+        rooms: []
+      };
+    },
+    canSubmit: function canSubmit() {
+      return true; // return this.formData.first_name !== '' && this.formData.last_name !== '' && this.formData.phone !== ''
+    },
+    isEditing: function isEditing() {
+      return !!this.reservation;
+    }
+  },
+  methods: {
+    getAsyncGuests: lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default()(function () {
+      var _this = this;
+
+      if (!this.name.length) {
+        this.guests = [];
+        return;
+      }
+
+      this.loadingGuests = true;
+      axios.get("/api/guests?search=".concat(this.name)).then(function (_ref) {
+        var data = _ref.data;
+        _this.guests = data;
+      }).catch(function (_ref2) {
+        var message = _ref2.message;
+        _this.guests = [];
+
+        _this.$toast.open({
+          message: message,
+          type: 'is-danger'
+        });
+      }).finally(function () {
+        _this.loadingGuests = false;
+      });
+    }, 500),
+    checkRooms: function checkRooms() {
+      var _this2 = this;
+
+      var formData = {
+        'start_date': this.checkIn.getMonth() + 1 + '-' + this.checkIn.getDate() + '-' + this.checkIn.getFullYear(),
+        'end_date': this.checkOut.getMonth() + 1 + '-' + this.checkOut.getDate() + '-' + this.checkOut.getFullYear()
+      };
+      axios.get('/api/rooms', {
+        params: formData
+      }).then(function (_ref3) {
+        var data = _ref3.data;
+        _this2.rooms = data;
+      }).catch(function (err) {
+        return console.log(err);
+      });
+    },
+    addReservation: function addReservation() {
+      var _this3 = this;
+
+      axios.post('/api/reservations', this.formData).then(function (_ref4) {
+        var data = _ref4.data;
+
+        _this3.$emit('new-reservation', data.reservation);
+
+        _this3.$parent.close();
+
+        _this3.$toast.open({
+          message: data.message,
+          type: 'is-success'
+        });
+      }).catch(function (err) {
+        _this3.$toast.open({
+          message: err.response.data.message,
+          type: 'is-danger'
+        });
+      });
+    },
+    updateReservation: function updateReservation() {
+      var _this4 = this;
+
+      this.formData._method = 'patch';
+      axios.post("/api/reservations/".concat(this.reservation.id), this.formData).then(function (_ref5) {
+        var data = _ref5.data;
+
+        _this4.$emit('reservation-updated', data.reservation);
+
+        _this4.$parent.close();
+
+        _this4.$toast.open({
+          message: data.message,
+          type: 'is-success'
+        });
+      }).catch(function (err) {
+        _this4.$toast.open({
+          message: err.response.data.message,
+          type: 'is-danger'
+        });
+      });
+    },
+    submit: function submit() {
+      if (this.isEditing) {
+        return this.updateReservation();
+      }
+
+      this.addReservation();
+    }
+  },
+  mounted: function mounted() {
+    if (this.isEditing) {// this.formData.first_name = this.reservation.first_name
+      // this.formData.last_name = this.reservation.last_name
+      // this.formData.email = this.reservation.email
+      // this.formData.phone = this.reservation.phone
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/roomTypes/RoomTypeForm.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/roomTypes/RoomTypeForm.vue?vue&type=script&lang=js& ***!
@@ -2237,15 +2533,12 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     RoomTypeForm: _roomTypes_RoomTypeForm__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: ['type_id', 'room', 'types'],
+  props: ['room'],
   data: function data() {
-    var _this = this;
-
     return {
       loadingTypes: false,
-      type: this.types.find(function (t) {
-        return t.id === _this.type_id;
-      }),
+      types: [],
+      type: null,
       name: '',
       comment: '',
       available: true
@@ -2273,7 +2566,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     openRoomTypeFormModal: function openRoomTypeFormModal() {
-      var _this2 = this;
+      var _this = this;
 
       this.$modal.open({
         parent: this,
@@ -2282,20 +2575,41 @@ __webpack_require__.r(__webpack_exports__);
         width: 700,
         events: {
           'new-room-type': function newRoomType(type) {
-            _this2.types.push(type);
+            _this.types.push(type);
 
-            _this2.type = type;
+            _this.type = type;
           }
         }
       });
     },
     addRoom: function addRoom() {
-      var _this3 = this;
+      var _this2 = this;
 
       axios.post('/api/rooms', this.formData).then(function (_ref) {
         var data = _ref.data;
 
-        _this3.$emit('new-room', data.room);
+        _this2.$emit('new-room', data.room);
+
+        _this2.$parent.close();
+
+        _this2.$toast.open({
+          message: data.message,
+          type: 'is-success'
+        });
+      }).catch(function (err) {
+        _this2.$toast.open({
+          message: err.response.data.message,
+          type: 'is-danger'
+        });
+      });
+    },
+    updateRoom: function updateRoom() {
+      var _this3 = this;
+
+      axios.post("/api/rooms/".concat(this.room.id), this.formData).then(function (_ref2) {
+        var data = _ref2.data;
+
+        _this3.$emit('updated-room', data.room);
 
         _this3.$parent.close();
 
@@ -2310,19 +2624,21 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    updateRoom: function updateRoom() {
+    submit: function submit() {
+      if (this.isEditing) {
+        return this.updateRoom();
+      }
+
+      this.addRoom();
+    },
+    getTypes: function getTypes() {
       var _this4 = this;
 
-      axios.post("/api/rooms/".concat(this.room.id), this.formData).then(function (_ref2) {
-        var data = _ref2.data;
-
-        _this4.$emit('updated-room', data.room);
-
-        _this4.$parent.close();
-
-        _this4.$toast.open({
-          message: data.message,
-          type: 'is-success'
+      axios.get('/api/room-types').then(function (_ref3) {
+        var data = _ref3.data;
+        _this4.types = data;
+        _this4.type = _this4.types.find(function (t) {
+          return t.id === _this4.room.type_id;
         });
       }).catch(function (err) {
         _this4.$toast.open({
@@ -2330,16 +2646,11 @@ __webpack_require__.r(__webpack_exports__);
           type: 'is-danger'
         });
       });
-    },
-    submit: function submit() {
-      if (this.isEditing) {
-        return this.updateRoom();
-      }
-
-      this.addRoom();
     }
   },
   mounted: function mounted() {
+    this.getTypes();
+
     if (this.isEditing) {
       this.name = this.room.name;
       this.comment = this.room.comment;
@@ -2855,76 +3166,78 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+/* harmony import */ var _components_reservations_ReservationForm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../components/reservations/ReservationForm */ "./resources/js/components/reservations/ReservationForm.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Reservations',
   data: function data() {
-    var _ref;
-
-    return _ref = {
-      loading: false
-    }, _defineProperty(_ref, "loading", false), _defineProperty(_ref, "reservations", []), _defineProperty(_ref, "total", 0), _defineProperty(_ref, "page", 1), _defineProperty(_ref, "perPage", 0), _ref;
+    return {
+      loading: false,
+      reservations: [],
+      total: 0,
+      page: 1,
+      perPage: 0
+    };
   },
   methods: {
     onPageChange: function onPageChange(page) {
@@ -2935,8 +3248,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       this.loading = true;
-      axios.get("/api/reservations?page=".concat(this.page)).then(function (_ref2) {
-        var data = _ref2.data;
+      axios.get("/api/reservations?page=".concat(this.page)).then(function (_ref) {
+        var data = _ref.data;
         _this.reservations = data.data;
         _this.perPage = data.per_page;
         _this.total = data.total;
@@ -2952,6 +3265,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     selected: function selected(reservation) {
       this.$router.push({
         path: "/reservations/".concat(reservation.id)
+      });
+    },
+    openNewReservationModal: function openNewReservationModal() {
+      var _this2 = this;
+
+      this.$modal.open({
+        parent: this,
+        component: _components_reservations_ReservationForm__WEBPACK_IMPORTED_MODULE_0__["default"],
+        hasModalCard: true,
+        width: 800,
+        events: {
+          'new-reservation': function newReservation(reservation) {
+            _this2.total++;
+
+            if (_this2.reservations.length < _this2.perPage) {
+              _this2.reservations.push(reservation);
+            }
+          }
+        }
       });
     }
   },
@@ -2971,14 +3303,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_rooms_RoomForm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../components/rooms/RoomForm */ "./resources/js/components/rooms/RoomForm.vue");
-/* harmony import */ var lodash_groupBy__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash/groupBy */ "./node_modules/lodash/groupBy.js");
-/* harmony import */ var lodash_groupBy__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_groupBy__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components_RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../components/RoomTypesTabs */ "./resources/js/components/RoomTypesTabs.vue");
+/* harmony import */ var _components_rooms_RoomForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../components/rooms/RoomForm */ "./resources/js/components/rooms/RoomForm.vue");
 /* harmony import */ var lodash_countBy__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/countBy */ "./node_modules/lodash/countBy.js");
 /* harmony import */ var lodash_countBy__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash_countBy__WEBPACK_IMPORTED_MODULE_2__);
-//
-//
-//
 //
 //
 //
@@ -3060,35 +3388,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Rooms',
   components: {
-    RoomForm: _components_rooms_RoomForm__WEBPACK_IMPORTED_MODULE_0__["default"]
+    RoomTypesTabs: _components_RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__["default"],
+    RoomForm: _components_rooms_RoomForm__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
       loading: false,
-      activeTab: 0,
-      types: [],
       rooms: []
     };
   },
   computed: {
-    tabs: function tabs() {
-      var tabs = this.types.map(function (t) {
-        return {
-          label: t.name,
-          id: t.id,
-          data: []
-        };
-      });
-      var grouped = lodash_groupBy__WEBPACK_IMPORTED_MODULE_1___default()(this.rooms, function (room) {
-        return room.type.id;
-      });
-      tabs.forEach(function (t) {
-        if (t.id in grouped) {
-          t.data = grouped[t.id];
-        }
-      });
-      return tabs;
-    },
     stats: function stats() {
       return lodash_countBy__WEBPACK_IMPORTED_MODULE_2___default()(this.rooms, function (room) {
         return room['available'] ? 'available' : 'occupied';
@@ -3096,78 +3405,59 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    getTypes: function getTypes() {
+    getRooms: function getRooms() {
       var _this = this;
 
-      axios.get('/api/room-types').then(function (_ref) {
+      this.loading = true;
+      axios.get("/api/rooms").then(function (_ref) {
         var data = _ref.data;
-        _this.types = data;
+        _this.rooms = data;
       }).catch(function (err) {
         _this.$toast.open({
           message: err.response.data.message,
           type: 'is-danger'
         });
-      });
-    },
-    getRooms: function getRooms() {
-      var _this2 = this;
-
-      this.loading = true;
-      axios.get("/api/rooms").then(function (_ref2) {
-        var data = _ref2.data;
-        _this2.rooms = data;
-      }).catch(function (err) {
-        _this2.$toast.open({
-          message: err.response.data.message,
-          type: 'is-danger'
-        });
       }).finally(function () {
-        _this2.loading = false;
+        _this.loading = false;
       });
     },
     openNewRoomModal: function openNewRoomModal() {
-      var _this3 = this;
+      var _this2 = this;
 
       this.$modal.open({
         parent: this,
-        component: _components_rooms_RoomForm__WEBPACK_IMPORTED_MODULE_0__["default"],
+        component: _components_rooms_RoomForm__WEBPACK_IMPORTED_MODULE_1__["default"],
         hasModalCard: true,
         width: 960,
         events: {
           'new-room': function newRoom(room) {
-            _this3.rooms.push(room);
+            _this2.rooms.push(room);
           }
-        },
-        props: {
-          types: this.types,
-          type_id: this.tabs[this.activeTab] ? this.tabs[this.activeTab].id : null
         }
       });
     },
     openEditRoomModal: function openEditRoomModal(room) {
-      var _this4 = this;
+      var _this3 = this;
 
       this.$modal.open({
         parent: this,
-        component: _components_rooms_RoomForm__WEBPACK_IMPORTED_MODULE_0__["default"],
+        component: _components_rooms_RoomForm__WEBPACK_IMPORTED_MODULE_1__["default"],
         hasModalCard: true,
         width: 960,
         events: {
           'updated-room': function updatedRoom(room) {
-            _this4.$set(_this4.rooms, _this4.rooms.findIndex(function (r) {
+            _this3.$set(_this3.rooms, _this3.rooms.findIndex(function (r) {
               return r.id === room.id;
             }), room);
           }
         },
         props: {
-          types: this.types,
-          room: room,
-          type_id: this.tabs[this.activeTab].id
+          room: room
         }
       });
     },
     confirmDelete: function confirmDelete(room) {
-      var _this5 = this;
+      var _this4 = this;
 
       this.$dialog.confirm({
         title: "Deleting room: ".concat(room.name),
@@ -3176,32 +3466,32 @@ __webpack_require__.r(__webpack_exports__);
         type: 'is-danger',
         hasIcon: true,
         onConfirm: function onConfirm() {
-          _this5.delete(room);
+          _this4.delete(room);
         }
       });
     },
     delete: function _delete(room) {
-      var _this6 = this;
+      var _this5 = this;
 
       this.loading = true;
-      axios.delete("/api/rooms/".concat(room.id)).then(function (_ref3) {
-        var data = _ref3.data;
+      axios.delete("/api/rooms/".concat(room.id)).then(function (_ref2) {
+        var data = _ref2.data;
 
-        _this6.rooms.splice(_this6.rooms.findIndex(function (r) {
+        _this5.rooms.splice(_this5.rooms.findIndex(function (r) {
           return r.id === room.id;
         }), 1);
 
-        _this6.$toast.open({
+        _this5.$toast.open({
           message: data.message,
           type: 'is-success'
         });
       }).catch(function (err) {
-        _this6.$toast.open({
+        _this5.$toast.open({
           message: err.response.data.message,
           type: 'is-danger'
         });
       }).finally(function () {
-        _this6.loading = false;
+        _this5.loading = false;
       });
     },
     roomStatusColor: function roomStatusColor(available) {
@@ -3220,7 +3510,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getTypes();
     this.getRooms();
   }
 });
@@ -15452,6 +15741,25 @@ exports.push([module.i, ".menu[data-v-81fbb27e] {\n  cursor: pointer;\n}\n.menu 
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VClock.vue?vue&type=style&index=0&id=54111763&scoped=true&lang=css&":
 /*!************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VClock.vue?vue&type=style&index=0&id=54111763&scoped=true&lang=css& ***!
@@ -19470,6 +19778,207 @@ var countBy = createAggregator(function(result, value, key) {
 });
 
 module.exports = countBy;
+
+
+/***/ }),
+
+/***/ "./node_modules/lodash/debounce.js":
+/*!*****************************************!*\
+  !*** ./node_modules/lodash/debounce.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(/*! ./isObject */ "./node_modules/lodash/isObject.js"),
+    now = __webpack_require__(/*! ./now */ "./node_modules/lodash/now.js"),
+    toNumber = __webpack_require__(/*! ./toNumber */ "./node_modules/lodash/toNumber.js");
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max,
+    nativeMin = Math.min;
+
+/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked. The debounced function comes with a `cancel` method to cancel
+ * delayed `func` invocations and a `flush` method to immediately invoke them.
+ * Provide `options` to indicate whether `func` should be invoked on the
+ * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+ * with the last arguments provided to the debounced function. Subsequent
+ * calls to the debounced function return the result of the last `func`
+ * invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the debounced function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.debounce` and `_.throttle`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to debounce.
+ * @param {number} [wait=0] The number of milliseconds to delay.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=false]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {number} [options.maxWait]
+ *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new debounced function.
+ * @example
+ *
+ * // Avoid costly calculations while the window size is in flux.
+ * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+ *
+ * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+ * jQuery(element).on('click', _.debounce(sendMail, 300, {
+ *   'leading': true,
+ *   'trailing': false
+ * }));
+ *
+ * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+ * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+ * var source = new EventSource('/stream');
+ * jQuery(source).on('message', debounced);
+ *
+ * // Cancel the trailing debounced invocation.
+ * jQuery(window).on('popstate', debounced.cancel);
+ */
+function debounce(func, wait, options) {
+  var lastArgs,
+      lastThis,
+      maxWait,
+      result,
+      timerId,
+      lastCallTime,
+      lastInvokeTime = 0,
+      leading = false,
+      maxing = false,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  wait = toNumber(wait) || 0;
+  if (isObject(options)) {
+    leading = !!options.leading;
+    maxing = 'maxWait' in options;
+    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+
+  function invokeFunc(time) {
+    var args = lastArgs,
+        thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  function leadingEdge(time) {
+    // Reset any `maxWait` timer.
+    lastInvokeTime = time;
+    // Start the timer for the trailing edge.
+    timerId = setTimeout(timerExpired, wait);
+    // Invoke the leading edge.
+    return leading ? invokeFunc(time) : result;
+  }
+
+  function remainingWait(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime,
+        timeWaiting = wait - timeSinceLastCall;
+
+    return maxing
+      ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
+      : timeWaiting;
+  }
+
+  function shouldInvoke(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime;
+
+    // Either this is the first call, activity has stopped and we're at the
+    // trailing edge, the system time has gone backwards and we're treating
+    // it as the trailing edge, or we've hit the `maxWait` limit.
+    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+  }
+
+  function timerExpired() {
+    var time = now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer.
+    timerId = setTimeout(timerExpired, remainingWait(time));
+  }
+
+  function trailingEdge(time) {
+    timerId = undefined;
+
+    // Only invoke if we have `lastArgs` which means `func` has been
+    // debounced at least once.
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function cancel() {
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+    }
+    lastInvokeTime = 0;
+    lastArgs = lastCallTime = lastThis = timerId = undefined;
+  }
+
+  function flush() {
+    return timerId === undefined ? result : trailingEdge(now());
+  }
+
+  function debounced() {
+    var time = now(),
+        isInvoking = shouldInvoke(time);
+
+    lastArgs = arguments;
+    lastThis = this;
+    lastCallTime = time;
+
+    if (isInvoking) {
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      if (maxing) {
+        // Handle invocations in a tight loop.
+        timerId = setTimeout(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, wait);
+    }
+    return result;
+  }
+  debounced.cancel = cancel;
+  debounced.flush = flush;
+  return debounced;
+}
+
+module.exports = debounce;
 
 
 /***/ }),
@@ -37370,6 +37879,40 @@ module.exports = memoize;
 
 /***/ }),
 
+/***/ "./node_modules/lodash/now.js":
+/*!************************************!*\
+  !*** ./node_modules/lodash/now.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__(/*! ./_root */ "./node_modules/lodash/_root.js");
+
+/**
+ * Gets the timestamp of the number of milliseconds that have elapsed since
+ * the Unix epoch (1 January 1970 00:00:00 UTC).
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Date
+ * @returns {number} Returns the timestamp.
+ * @example
+ *
+ * _.defer(function(stamp) {
+ *   console.log(_.now() - stamp);
+ * }, _.now());
+ * // => Logs the number of milliseconds it took for the deferred invocation.
+ */
+var now = function() {
+  return root.Date.now();
+};
+
+module.exports = now;
+
+
+/***/ }),
+
 /***/ "./node_modules/lodash/property.js":
 /*!*****************************************!*\
   !*** ./node_modules/lodash/property.js ***!
@@ -37472,6 +38015,83 @@ function stubFalse() {
 }
 
 module.exports = stubFalse;
+
+
+/***/ }),
+
+/***/ "./node_modules/lodash/toNumber.js":
+/*!*****************************************!*\
+  !*** ./node_modules/lodash/toNumber.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(/*! ./isObject */ "./node_modules/lodash/isObject.js"),
+    isSymbol = __webpack_require__(/*! ./isSymbol */ "./node_modules/lodash/isSymbol.js");
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3.2);
+ * // => 3.2
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3.2');
+ * // => 3.2
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return NAN;
+  }
+  if (isObject(value)) {
+    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+module.exports = toNumber;
 
 
 /***/ }),
@@ -37947,6 +38567,36 @@ if(false) {}
 
 
 var content = __webpack_require__(/*! !../../../node_modules/css-loader!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--7-2!../../../node_modules/sass-loader/lib/loader.js??ref--7-3!../../../node_modules/vue-loader/lib??vue-loader-options!./Sidebar.vue?vue&type=style&index=0&id=81fbb27e&scoped=true&lang=scss& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/lib/loader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Sidebar.vue?vue&type=style&index=0&id=81fbb27e&scoped=true&lang=scss&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css&");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -38822,6 +39472,61 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RoomTypesTabs.vue?vue&type=template&id=be9c82be&scoped=true&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RoomTypesTabs.vue?vue&type=template&id=be9c82be&scoped=true& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-tabs",
+        {
+          attrs: { position: "is-centered" },
+          model: {
+            value: _vm.activeTab,
+            callback: function($$v) {
+              _vm.activeTab = $$v
+            },
+            expression: "activeTab"
+          }
+        },
+        [
+          _vm._l(_vm.tabs, function(tab) {
+            return [
+              _c(
+                "b-tab-item",
+                { key: tab.id, attrs: { label: tab.label } },
+                [_vm._t("default", null, { rooms: tab.data })],
+                2
+              )
+            ]
+          })
+        ],
+        2
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Sidebar.vue?vue&type=template&id=81fbb27e&scoped=true&":
 /*!**********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Sidebar.vue?vue&type=template&id=81fbb27e&scoped=true& ***!
@@ -39084,6 +39789,243 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("header", { staticClass: "modal-card-head" }, [
       _c("p", { staticClass: "modal-card-title" }, [_vm._v("Add Room Type")])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "form",
+    {
+      on: {
+        submit: function($event) {
+          $event.preventDefault()
+        }
+      }
+    },
+    [
+      _c(
+        "div",
+        {
+          staticClass: "modal-card",
+          staticStyle: { width: "800px", height: "700px" }
+        },
+        [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "section",
+            { staticClass: "modal-card-body" },
+            [
+              _c(
+                "b-field",
+                { attrs: { label: "Guest" } },
+                [
+                  _c("b-autocomplete", {
+                    attrs: {
+                      data: _vm.guests,
+                      placeholder: "Guest name",
+                      field: "name",
+                      loading: _vm.loadingGuests
+                    },
+                    on: {
+                      select: function(option) {
+                        return (_vm.selectedGuest = option)
+                      }
+                    },
+                    nativeOn: {
+                      keyup: function($event) {
+                        return _vm.getAsyncGuests($event)
+                      }
+                    },
+                    model: {
+                      value: _vm.name,
+                      callback: function($$v) {
+                        _vm.name = $$v
+                      },
+                      expression: "name"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-field",
+                { attrs: { grouped: "" } },
+                [
+                  _c(
+                    "b-field",
+                    { attrs: { label: "Check In", expanded: "" } },
+                    [
+                      _c("b-datepicker", {
+                        attrs: {
+                          placeholder: "Click to select date...",
+                          icon: "calendar-today"
+                        },
+                        model: {
+                          value: _vm.checkIn,
+                          callback: function($$v) {
+                            _vm.checkIn = $$v
+                          },
+                          expression: "checkIn"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-field",
+                    { attrs: { label: "Check Out", expanded: "" } },
+                    [
+                      _c("b-datepicker", {
+                        attrs: {
+                          placeholder: "Click to select date...",
+                          icon: "calendar-today"
+                        },
+                        model: {
+                          value: _vm.checkOut,
+                          callback: function($$v) {
+                            _vm.checkOut = $$v
+                          },
+                          expression: "checkOut"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "button is-primary",
+                  on: { click: _vm.checkRooms }
+                },
+                [_vm._v("Check available rooms")]
+              ),
+              _vm._v(" "),
+              _vm.rooms.length > 0
+                ? _c("room-types-tabs", {
+                    attrs: { rooms: _vm.rooms },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "default",
+                        fn: function(rooms) {
+                          return [
+                            _c(
+                              "div",
+                              { staticClass: "columns is-multiline" },
+                              _vm._l(rooms.rooms, function(room) {
+                                return _c(
+                                  "div",
+                                  { key: room.id, staticClass: "column is-2" },
+                                  [
+                                    _c(
+                                      "b-field",
+                                      [
+                                        _c(
+                                          "b-checkbox-button",
+                                          {
+                                            attrs: {
+                                              "native-value": room,
+                                              type: "is-info",
+                                              size: "is-medium"
+                                            },
+                                            model: {
+                                              value: _vm.selectedRooms,
+                                              callback: function($$v) {
+                                                _vm.selectedRooms = $$v
+                                              },
+                                              expression: "selectedRooms"
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                    " +
+                                                _vm._s(room.name) +
+                                                "\n                                "
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              }),
+                              0
+                            )
+                          ]
+                        }
+                      }
+                    ])
+                  })
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("footer", { staticClass: "modal-card-foot" }, [
+            _c(
+              "button",
+              {
+                staticClass: "button",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    _vm.$parent.close()
+                  }
+                }
+              },
+              [_vm._v("Close")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "button is-primary",
+                attrs: { disabled: !_vm.canSubmit },
+                on: { click: _vm.submit }
+              },
+              [_vm._v("Submit")]
+            )
+          ])
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("header", { staticClass: "modal-card-head" }, [
+      _c("p", { staticClass: "modal-card-title" }, [_vm._v("Add Reservation")])
     ])
   }
 ]
@@ -40125,7 +41067,7 @@ var render = function() {
               {
                 staticClass: "button is-medium is-info is-outlined",
                 staticStyle: { "border-radius": "50%" },
-                on: { click: function($event) {} }
+                on: { click: _vm.openNewReservationModal }
               },
               [_c("b-icon", { attrs: { icon: "plus", size: "is-small" } })],
               1
@@ -40194,168 +41136,145 @@ var render = function() {
                   _vm._v("Rooms")
                 ]),
                 _vm._v(" "),
-                _vm.tabs.length > 0
-                  ? _c(
-                      "b-tabs",
-                      {
-                        attrs: { position: "is-centered" },
-                        model: {
-                          value: _vm.activeTab,
-                          callback: function($$v) {
-                            _vm.activeTab = $$v
-                          },
-                          expression: "activeTab"
-                        }
-                      },
-                      [
-                        _vm._l(_vm.tabs, function(tab) {
-                          return [
-                            _c(
-                              "b-tab-item",
-                              { key: tab.id, attrs: { label: tab.label } },
-                              [
-                                _c("b-table", {
-                                  attrs: {
-                                    data: tab.data,
-                                    narrowed: "",
-                                    striped: ""
-                                  },
-                                  scopedSlots: _vm._u([
-                                    {
-                                      key: "default",
-                                      fn: function(props) {
-                                        return [
-                                          _c(
-                                            "b-table-column",
-                                            {
-                                              attrs: {
-                                                field: "id",
-                                                label: "ID",
-                                                width: "60"
+                _c("room-types-tabs", {
+                  attrs: { rooms: _vm.rooms },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "default",
+                      fn: function(rooms) {
+                        return [
+                          _c("b-table", {
+                            attrs: {
+                              data: rooms.rooms,
+                              narrowed: "",
+                              striped: ""
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "default",
+                                fn: function(props) {
+                                  return [
+                                    _c(
+                                      "b-table-column",
+                                      {
+                                        attrs: {
+                                          field: "id",
+                                          label: "ID",
+                                          width: "60"
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                    " +
+                                            _vm._s(props.row.id) +
+                                            "\n                                "
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-table-column",
+                                      {
+                                        attrs: {
+                                          field: "name",
+                                          label: "Name",
+                                          width: "200"
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                    " +
+                                            _vm._s(props.row.name) +
+                                            "\n                                "
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-table-column",
+                                      {
+                                        attrs: {
+                                          field: "available",
+                                          label: "Status",
+                                          centered: ""
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "b-tag",
+                                          {
+                                            attrs: {
+                                              type: _vm.roomStatusColor(
+                                                props.row.available
+                                              )
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.roomStatusText(
+                                                  props.row.available
+                                                )
+                                              ) +
+                                                "\n                                    "
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-table-column",
+                                      { attrs: { centered: "" } },
+                                      [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "button is-small is-outlined is-primary",
+                                            on: {
+                                              click: function($event) {
+                                                _vm.openEditRoomModal(props.row)
                                               }
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n                                        " +
-                                                  _vm._s(props.row.id) +
-                                                  "\n                                    "
-                                              )
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "b-table-column",
-                                            {
-                                              attrs: {
-                                                field: "name",
-                                                label: "Name",
-                                                width: "200"
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "Edit\n                                    "
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "button is-small is-outlined is-danger",
+                                            on: {
+                                              click: function($event) {
+                                                _vm.confirmDelete(props.row)
                                               }
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n                                        " +
-                                                  _vm._s(props.row.name) +
-                                                  "\n                                    "
-                                              )
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "b-table-column",
-                                            {
-                                              attrs: {
-                                                field: "available",
-                                                label: "Status",
-                                                centered: ""
-                                              }
-                                            },
-                                            [
-                                              _c(
-                                                "b-tag",
-                                                {
-                                                  attrs: {
-                                                    type: _vm.roomStatusColor(
-                                                      props.row.available
-                                                    )
-                                                  }
-                                                },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(
-                                                      _vm.roomStatusText(
-                                                        props.row.available
-                                                      )
-                                                    ) +
-                                                      "\n                                        "
-                                                  )
-                                                ]
-                                              )
-                                            ],
-                                            1
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "b-table-column",
-                                            { attrs: { centered: "" } },
-                                            [
-                                              _c(
-                                                "button",
-                                                {
-                                                  staticClass:
-                                                    "button is-small is-outlined is-primary",
-                                                  on: {
-                                                    click: function($event) {
-                                                      _vm.openEditRoomModal(
-                                                        props.row
-                                                      )
-                                                    }
-                                                  }
-                                                },
-                                                [
-                                                  _vm._v(
-                                                    "Edit\n                                        "
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "button",
-                                                {
-                                                  staticClass:
-                                                    "button is-small is-outlined is-danger",
-                                                  on: {
-                                                    click: function($event) {
-                                                      _vm.confirmDelete(
-                                                        props.row
-                                                      )
-                                                    }
-                                                  }
-                                                },
-                                                [
-                                                  _vm._v(
-                                                    "Delete\n                                        "
-                                                  )
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      }
-                                    }
-                                  ])
-                                })
-                              ],
-                              1
-                            )
-                          ]
-                        })
-                      ],
-                      2
-                    )
-                  : _c("div", { staticStyle: { "margin-bottom": "3rem" } }, [
-                      _vm._v("Sorry, no rooms...")
-                    ]),
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "Delete\n                                    "
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                }
+                              }
+                            ])
+                          })
+                        ]
+                      }
+                    }
+                  ])
+                }),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -54495,6 +55414,93 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/RoomTypesTabs.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/RoomTypesTabs.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RoomTypesTabs_vue_vue_type_template_id_be9c82be_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RoomTypesTabs.vue?vue&type=template&id=be9c82be&scoped=true& */ "./resources/js/components/RoomTypesTabs.vue?vue&type=template&id=be9c82be&scoped=true&");
+/* harmony import */ var _RoomTypesTabs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RoomTypesTabs.vue?vue&type=script&lang=js& */ "./resources/js/components/RoomTypesTabs.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _RoomTypesTabs_vue_vue_type_style_index_0_id_be9c82be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css& */ "./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _RoomTypesTabs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _RoomTypesTabs_vue_vue_type_template_id_be9c82be_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _RoomTypesTabs_vue_vue_type_template_id_be9c82be_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "be9c82be",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/RoomTypesTabs.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/RoomTypesTabs.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/RoomTypesTabs.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./RoomTypesTabs.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RoomTypesTabs.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css&":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css& ***!
+  \************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_style_index_0_id_be9c82be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RoomTypesTabs.vue?vue&type=style&index=0&id=be9c82be&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_style_index_0_id_be9c82be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_style_index_0_id_be9c82be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_style_index_0_id_be9c82be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_style_index_0_id_be9c82be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_style_index_0_id_be9c82be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/RoomTypesTabs.vue?vue&type=template&id=be9c82be&scoped=true&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/RoomTypesTabs.vue?vue&type=template&id=be9c82be&scoped=true& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_template_id_be9c82be_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./RoomTypesTabs.vue?vue&type=template&id=be9c82be&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RoomTypesTabs.vue?vue&type=template&id=be9c82be&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_template_id_be9c82be_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RoomTypesTabs_vue_vue_type_template_id_be9c82be_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Sidebar.vue":
 /*!*********************************************!*\
   !*** ./resources/js/components/Sidebar.vue ***!
@@ -54733,6 +55739,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GuestForm_vue_vue_type_template_id_9f3c0d1a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GuestForm_vue_vue_type_template_id_9f3c0d1a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/reservations/ReservationForm.vue":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/reservations/ReservationForm.vue ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ReservationForm.vue?vue&type=template&id=2e995073& */ "./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073&");
+/* harmony import */ var _ReservationForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ReservationForm.vue?vue&type=script&lang=js& */ "./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ReservationForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/reservations/ReservationForm.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ReservationForm.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073& ***!
+  \*************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ReservationForm.vue?vue&type=template&id=2e995073& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
