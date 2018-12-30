@@ -33,3 +33,4 @@ Route::delete('guests/{guest}', 'Api\GuestsController@destroy');
 
 Route::get('reservations', 'Api\ReservationsController@index');
 Route::get('reservations/{reservation}', 'Api\ReservationsController@show');
+Route::delete('reservations/{reservation}', 'Api\ReservationsController@destroy');

@@ -20,4 +20,14 @@ class ReservationsController extends Controller
 
         return response()->json($reservation);
     }
+
+    public function destroy(Reservation $reservation)
+    {
+        $reservation->delete();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Reservation deleted'
+        ]);
+    }
 }
