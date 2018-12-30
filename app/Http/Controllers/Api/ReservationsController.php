@@ -13,4 +13,11 @@ class ReservationsController extends Controller
 
         return response()->json($reservations);
     }
+
+    public function show(Reservation $reservation)
+    {
+        $reservation->load('guest', 'rooms', 'rooms.type');
+
+        return response()->json($reservation);
+    }
 }

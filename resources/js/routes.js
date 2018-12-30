@@ -4,6 +4,7 @@ import Rooms from './views/Rooms'
 import Guests from './views/Guests'
 import Guest from './views/Guest'
 import Reservations from './views/Reservations'
+import Reservation from './views/Reservation'
 
 const routes = [
     {
@@ -25,6 +26,10 @@ const routes = [
     {
         path: '/reservations',
         component: Reservations
+    },
+    {
+        path: '/reservations/:id',
+        component: Reservation
     },
 ]
 

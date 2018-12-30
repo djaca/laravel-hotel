@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         });
 
         $room = \App\Room::find(1)->update(['available' => false]);
-        factory(\App\Reservation::class)->create()->rooms()->attach(1);
+        factory(\App\Reservation::class)->create()->rooms()->attach([1, 2]);
 
         factory(\App\Guest::class, 8)->create();
     }
