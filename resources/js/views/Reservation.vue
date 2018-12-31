@@ -33,7 +33,7 @@
                             <button
                                 class="button is-medium is-info is-outlined"
                                 style="border-radius: 50%"
-                                @click="openEditGuestModal"
+                                @click="editReservation"
                             >
                                 <b-icon icon="pencil" size="is-small"></b-icon>
                             </button>
@@ -114,21 +114,8 @@
                     })
             },
 
-            openEditGuestModal () {
-                this.$modal.open({
-                    parent: this,
-                    component: GuestForm,
-                    hasModalCard: true,
-                    width: 960,
-                    events: {
-                        'reservation-updated': reservation => {
-                            this.reservation = reservation
-                        }
-                    },
-                    props: {
-                        reservation: this.reservation
-                    }
-                })
+            editReservation () {
+                this.$router.push({ path: `/reservations/${this.reservation.id}/edit` })
             },
 
             confirmDelete () {

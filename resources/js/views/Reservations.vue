@@ -48,7 +48,7 @@
                     <button
                         class="button is-medium is-info is-outlined"
                         style="border-radius: 50%"
-                        @click="openNewReservationModal"
+                        @click="createReservation"
                     >
                         <b-icon icon="plus" size="is-small"></b-icon>
                     </button>
@@ -59,7 +59,6 @@
 </template>
 
 <script>
-    import ReservationForm from './../components/reservations/ReservationForm'
     export default {
         name: 'Reservations',
 
@@ -104,22 +103,8 @@
                 this.$router.push({ path: `/reservations/${reservation.id}` })
             },
 
-            openNewReservationModal () {
-                this.$modal.open({
-                    parent: this,
-                    component: ReservationForm,
-                    hasModalCard: true,
-                    width: 800,
-                    events: {
-                        'new-reservation': reservation => {
-                            this.total++
-
-                            if (this.reservations.length < this.perPage) {
-                                this.reservations.push(reservation)
-                            }
-                        }
-                    }
-                })
+            createReservation () {
+                this.$router.push({ path: '/reservations/create' })
             }
         },
 

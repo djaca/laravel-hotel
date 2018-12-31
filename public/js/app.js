@@ -1754,6 +1754,107 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/InvoiceBox.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/InvoiceBox.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'InvoiceBox',
+  props: ['rooms', 'quantity'],
+  computed: {
+    isEmpty: function isEmpty() {
+      return this.items.length < 1;
+    },
+    subtotal: function subtotal() {
+      return +this.items.reduce(function (acc, val) {
+        return acc + val.line_total;
+      }, 0).toFixed(2);
+    },
+    tax: function tax() {
+      return +(this.subtotal * 18 / 100).toFixed(2);
+    },
+    total: function total() {
+      return +(this.subtotal + this.tax).toFixed(2);
+    },
+    items: function items() {
+      var _this = this;
+
+      return this.rooms.map(function (room) {
+        return {
+          description: room.name,
+          price: room.type.price,
+          quantity: _this.quantity,
+          line_total: _this.quantity * room.type.price
+        };
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Navbar.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Navbar.vue?vue&type=script&lang=js& ***!
@@ -2102,226 +2203,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../RoomTypesTabs */ "./resources/js/components/RoomTypesTabs.vue");
-/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash/debounce */ "./node_modules/lodash/debounce.js");
-/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_debounce__WEBPACK_IMPORTED_MODULE_1__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'ReservationForm',
-  components: {
-    RoomTypesTabs: _RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  props: ['reservation'],
-  data: function data() {
-    return {
-      loadingGuests: false,
-      guests: [],
-      selectedGuest: null,
-      name: '',
-      checkIn: null,
-      checkOut: null,
-      activeTab: 0,
-      selectedRooms: [],
-      rooms: []
-    };
-  },
-  computed: {
-    formData: function formData() {
-      return {
-        guest_id: this.selectedGuest ? this.selectedGuest.id : '',
-        start_date: this.checkIn ? this.$moment(this.checkIn).format("YYYY-MM-DD") : null,
-        end_date: this.checkIn ? this.$moment(this.checkOut).format("YYYY-MM-DD") : null,
-        rooms: this.selectedRooms.map(function (r) {
-          return r.id;
-        })
-      };
-    },
-    canSubmit: function canSubmit() {
-      return this.formData.guest_id !== '' && this.formData.start_date && this.formData.end_date && this.formData.rooms.length > 0;
-    },
-    isEditing: function isEditing() {
-      return !!this.reservation;
-    }
-  },
-  methods: {
-    getAsyncGuests: lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default()(function () {
-      var _this = this;
-
-      if (!this.name.length) {
-        this.guests = [];
-        return;
-      }
-
-      this.loadingGuests = true;
-      axios.get("/api/guests?search=".concat(this.name)).then(function (_ref) {
-        var data = _ref.data;
-        _this.guests = data;
-      }).catch(function (_ref2) {
-        var message = _ref2.message;
-        _this.guests = [];
-
-        _this.$toast.open({
-          message: message,
-          type: 'is-danger'
-        });
-      }).finally(function () {
-        _this.loadingGuests = false;
-      });
-    }, 500),
-    checkRooms: function checkRooms() {
-      var _this2 = this;
-
-      axios.get('/api/rooms', {
-        params: {
-          start_date: this.formData.start_date,
-          end_date: this.formData.end_date
-        }
-      }).then(function (_ref3) {
-        var data = _ref3.data;
-        _this2.rooms = data;
-      }).catch(function (err) {
-        return console.log(err);
-      });
-    },
-    addReservation: function addReservation() {
-      var _this3 = this;
-
-      axios.post('/api/reservations', this.formData).then(function (_ref4) {
-        var data = _ref4.data;
-
-        _this3.$emit('new-reservation', data.reservation);
-
-        _this3.$parent.close();
-
-        _this3.$toast.open({
-          message: data.message,
-          type: 'is-success'
-        });
-      }).catch(function (err) {
-        _this3.$toast.open({
-          message: err.response.data.message,
-          type: 'is-danger'
-        });
-      });
-    },
-    updateReservation: function updateReservation() {
-      var _this4 = this;
-
-      this.formData._method = 'patch';
-      axios.post("/api/reservations/".concat(this.reservation.id), this.formData).then(function (_ref5) {
-        var data = _ref5.data;
-
-        _this4.$emit('reservation-updated', data.reservation);
-
-        _this4.$parent.close();
-
-        _this4.$toast.open({
-          message: data.message,
-          type: 'is-success'
-        });
-      }).catch(function (err) {
-        _this4.$toast.open({
-          message: err.response.data.message,
-          type: 'is-danger'
-        });
-      });
-    },
-    submit: function submit() {
-      if (this.isEditing) {
-        return this.updateReservation();
-      }
-
-      this.addReservation();
-    }
-  },
-  mounted: function mounted() {
-    if (this.isEditing) {// this.formData.first_name = this.reservation.first_name
-      // this.formData.last_name = this.reservation.last_name
-      // this.formData.email = this.reservation.email
-      // this.formData.phone = this.reservation.phone
-    }
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/roomTypes/RoomTypeForm.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/roomTypes/RoomTypeForm.vue?vue&type=script&lang=js& ***!
@@ -2656,6 +2537,241 @@ __webpack_require__.r(__webpack_exports__);
       this.name = this.room.name;
       this.comment = this.room.comment;
       this.available = this.room.available;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/CreateReservation.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/CreateReservation.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../components/RoomTypesTabs */ "./resources/js/components/RoomTypesTabs.vue");
+/* harmony import */ var _components_InvoiceBox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../components/InvoiceBox */ "./resources/js/components/InvoiceBox.vue");
+/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/debounce */ "./node_modules/lodash/debounce.js");
+/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash_debounce__WEBPACK_IMPORTED_MODULE_2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'CreateReservation',
+  components: {
+    RoomTypesTabs: _components_RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__["default"],
+    InvoiceBox: _components_InvoiceBox__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  props: ['reservation'],
+  data: function data() {
+    return {
+      loadingGuests: false,
+      guests: [],
+      selectedGuest: null,
+      name: '',
+      checkIn: null,
+      checkOut: null,
+      activeTab: 0,
+      selectedRooms: [],
+      rooms: []
+    };
+  },
+  computed: {
+    parsedSelectedRooms: function parsedSelectedRooms() {
+      var _this = this;
+
+      return this.selectedRooms.map(function (r) {
+        return _this.rooms.find(function (room) {
+          return room.name === r;
+        });
+      });
+    },
+    quantity: function quantity() {
+      return this.$moment(this.checkOut).diff(this.checkIn, 'days');
+    },
+    formData: function formData() {
+      return {
+        guest_id: this.selectedGuest ? this.selectedGuest.id : '',
+        start_date: this.checkIn ? this.$moment(this.checkIn).format('YYYY-MM-DD') : null,
+        end_date: this.checkIn ? this.$moment(this.checkOut).format('YYYY-MM-DD') : null,
+        rooms: this.selectedRooms.map(function (r) {
+          return r.id;
+        })
+      };
+    },
+    canSubmit: function canSubmit() {
+      return this.formData.guest_id !== '' && this.formData.start_date && this.formData.end_date && this.formData.rooms.length > 0;
+    },
+    hasDates: function hasDates() {
+      return !!this.formData.start_date && !!this.formData.end_date;
+    },
+    isEditing: function isEditing() {
+      return !!this.reservation;
+    }
+  },
+  methods: {
+    clearRooms: function clearRooms() {
+      this.rooms = [];
+      this.selectedRooms = [];
+    },
+    getAsyncGuests: lodash_debounce__WEBPACK_IMPORTED_MODULE_2___default()(function () {
+      var _this2 = this;
+
+      if (!this.name.length) {
+        this.guests = [];
+        return;
+      }
+
+      this.loadingGuests = true;
+      axios.get("/api/guests?search=".concat(this.name)).then(function (_ref) {
+        var data = _ref.data;
+        _this2.guests = data;
+      }).catch(function (_ref2) {
+        var message = _ref2.message;
+        _this2.guests = [];
+
+        _this2.$toast.open({
+          message: message,
+          type: 'is-danger'
+        });
+      }).finally(function () {
+        _this2.loadingGuests = false;
+      });
+    }, 500),
+    checkRooms: function checkRooms() {
+      var _this3 = this;
+
+      axios.get('/api/rooms', {
+        params: {
+          start_date: this.formData.start_date,
+          end_date: this.formData.end_date
+        }
+      }).then(function (_ref3) {
+        var data = _ref3.data;
+        _this3.rooms = data;
+      }).catch(function (err) {
+        return console.log(err);
+      });
+    },
+    submit: function submit() {
+      var _this4 = this;
+
+      axios.post('/api/reservations', this.formData).then(function (_ref4) {
+        var data = _ref4.data;
+
+        _this4.$emit('new-reservation', data.reservation);
+
+        _this4.$parent.close();
+
+        _this4.$toast.open({
+          message: data.message,
+          type: 'is-success'
+        });
+      }).catch(function (err) {
+        _this4.$toast.open({
+          message: err.response.data.message,
+          type: 'is-danger'
+        });
+      });
+    },
+    populateFields: function populateFields() {// this.getRerservation()
+    }
+  },
+  mounted: function mounted() {
+    if (this.$route.name === 'EditReservation') {
+      this.populateFields();
     }
   }
 });
@@ -3092,26 +3208,13 @@ __webpack_require__.r(__webpack_exports__);
         _this.loading = false;
       });
     },
-    openEditGuestModal: function openEditGuestModal() {
-      var _this2 = this;
-
-      this.$modal.open({
-        parent: this,
-        component: GuestForm,
-        hasModalCard: true,
-        width: 960,
-        events: {
-          'reservation-updated': function reservationUpdated(reservation) {
-            _this2.reservation = reservation;
-          }
-        },
-        props: {
-          reservation: this.reservation
-        }
+    editReservation: function editReservation() {
+      this.$router.push({
+        path: "/reservations/".concat(this.reservation.id, "/edit")
       });
     },
     confirmDelete: function confirmDelete() {
-      var _this3 = this;
+      var _this2 = this;
 
       this.$dialog.confirm({
         title: "Deleting reservation: ".concat(this.reservation.name),
@@ -3120,31 +3223,31 @@ __webpack_require__.r(__webpack_exports__);
         type: 'is-danger',
         hasIcon: true,
         onConfirm: function onConfirm() {
-          _this3.delete();
+          _this2.delete();
         }
       });
     },
     delete: function _delete() {
-      var _this4 = this;
+      var _this3 = this;
 
       axios.delete("/api/reservations/".concat(this.reservation.id)).then(function (_ref2) {
         var data = _ref2.data;
 
-        _this4.$toast.open({
+        _this3.$toast.open({
           message: data.message,
           type: 'is-success'
         });
 
-        _this4.$router.push({
+        _this3.$router.push({
           path: '/reservations'
         });
       }).catch(function (err) {
-        _this4.$toast.open({
+        _this3.$toast.open({
           message: err.response.data.message,
           type: 'is-danger'
         });
       }).finally(function () {
-        _this4.loading = false;
+        _this3.loading = false;
       });
     }
   },
@@ -3167,7 +3270,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_reservations_ReservationForm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../components/reservations/ReservationForm */ "./resources/js/components/reservations/ReservationForm.vue");
 //
 //
 //
@@ -3228,7 +3330,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Reservations',
   data: function data() {
@@ -3268,23 +3369,9 @@ __webpack_require__.r(__webpack_exports__);
         path: "/reservations/".concat(reservation.id)
       });
     },
-    openNewReservationModal: function openNewReservationModal() {
-      var _this2 = this;
-
-      this.$modal.open({
-        parent: this,
-        component: _components_reservations_ReservationForm__WEBPACK_IMPORTED_MODULE_0__["default"],
-        hasModalCard: true,
-        width: 800,
-        events: {
-          'new-reservation': function newReservation(reservation) {
-            _this2.total++;
-
-            if (_this2.reservations.length < _this2.perPage) {
-              _this2.reservations.push(reservation);
-            }
-          }
-        }
+    createReservation: function createReservation() {
+      this.$router.push({
+        path: '/reservations/create'
       });
     }
   },
@@ -56710,6 +56797,174 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/InvoiceBox.vue?vue&type=template&id=9a31b5ee&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/InvoiceBox.vue?vue&type=template&id=9a31b5ee& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "box" }, [
+    _c("div", { staticClass: "card-header-title is-centered" }, [
+      _vm._v("Invoice")
+    ]),
+    _vm._v(" "),
+    !_vm.isEmpty
+      ? _c("div", [
+          _c(
+            "div",
+            { staticStyle: { "margin-bottom": "3rem" } },
+            [
+              _c("b-table", {
+                attrs: { data: _vm.items, narrowed: "", striped: "" },
+                scopedSlots: _vm._u([
+                  {
+                    key: "default",
+                    fn: function(props) {
+                      return [
+                        _c(
+                          "b-table-column",
+                          {
+                            attrs: {
+                              field: "description",
+                              label: "Description",
+                              width: "300"
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                        " +
+                                _vm._s(props.row.description) +
+                                "\n                    "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "b-table-column",
+                          {
+                            attrs: {
+                              field: "quantity",
+                              label: "Quantity",
+                              numeric: "",
+                              width: "40"
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                        " +
+                                _vm._s(props.row.quantity) +
+                                "\n                    "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "b-table-column",
+                          { attrs: { field: "price", label: "Price" } },
+                          [
+                            _vm._v(
+                              "\n                        $" +
+                                _vm._s(props.row.price) +
+                                "\n                    "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "b-table-column",
+                          {
+                            attrs: { field: "line_total", label: "Line Total" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                        $" +
+                                _vm._s(props.row.line_total) +
+                                "\n                    "
+                            )
+                          ]
+                        )
+                      ]
+                    }
+                  }
+                ])
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("table", { staticStyle: { width: "100%" } }, [
+            _c("tbody", [
+              _c("tr", [
+                _c("td"),
+                _vm._v(" "),
+                _c("td"),
+                _vm._v(" "),
+                _c("td"),
+                _vm._v(" "),
+                _c("td", { staticClass: "has-text-right" }, [
+                  _vm._v("Subtotal:")
+                ]),
+                _vm._v(" "),
+                _c("td", { staticClass: "has-text-right" }, [
+                  _vm._v("$" + _vm._s(_vm.subtotal))
+                ])
+              ]),
+              _vm._v(" "),
+              _c("tr", [
+                _c("td"),
+                _vm._v(" "),
+                _c("td"),
+                _vm._v(" "),
+                _c("td"),
+                _vm._v(" "),
+                _c("td", { staticClass: "has-text-right" }, [_vm._v("Tax:")]),
+                _vm._v(" "),
+                _c("td", { staticClass: "has-text-right" }, [
+                  _vm._v("$" + _vm._s(_vm.tax))
+                ])
+              ]),
+              _vm._v(" "),
+              _c("tr", [
+                _c("td"),
+                _vm._v(" "),
+                _c("td"),
+                _vm._v(" "),
+                _c("td"),
+                _vm._v(" "),
+                _c(
+                  "td",
+                  { staticClass: "has-text-right has-text-weight-semibold" },
+                  [_vm._v("Total:")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "td",
+                  { staticClass: "has-text-right has-text-weight-semibold" },
+                  [_vm._v("$" + _vm._s(_vm.total))]
+                )
+              ])
+            ])
+          ])
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Navbar.vue?vue&type=template&id=6dde423b&scoped=true&":
 /*!*********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Navbar.vue?vue&type=template&id=6dde423b&scoped=true& ***!
@@ -57057,243 +57312,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("header", { staticClass: "modal-card-head" }, [
       _c("p", { staticClass: "modal-card-title" }, [_vm._v("Add Room Type")])
-    ])
-  }
-]
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073&":
-/*!*******************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073& ***!
-  \*******************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "form",
-    {
-      on: {
-        submit: function($event) {
-          $event.preventDefault()
-        }
-      }
-    },
-    [
-      _c(
-        "div",
-        {
-          staticClass: "modal-card",
-          staticStyle: { width: "800px", height: "700px" }
-        },
-        [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "section",
-            { staticClass: "modal-card-body" },
-            [
-              _c(
-                "b-field",
-                { attrs: { label: "Guest" } },
-                [
-                  _c("b-autocomplete", {
-                    attrs: {
-                      data: _vm.guests,
-                      placeholder: "Guest name",
-                      field: "name",
-                      loading: _vm.loadingGuests
-                    },
-                    on: {
-                      select: function(option) {
-                        return (_vm.selectedGuest = option)
-                      }
-                    },
-                    nativeOn: {
-                      keyup: function($event) {
-                        return _vm.getAsyncGuests($event)
-                      }
-                    },
-                    model: {
-                      value: _vm.name,
-                      callback: function($$v) {
-                        _vm.name = $$v
-                      },
-                      expression: "name"
-                    }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "b-field",
-                { attrs: { grouped: "" } },
-                [
-                  _c(
-                    "b-field",
-                    { attrs: { label: "Check In", expanded: "" } },
-                    [
-                      _c("b-datepicker", {
-                        attrs: {
-                          placeholder: "Click to select date...",
-                          icon: "calendar-today"
-                        },
-                        model: {
-                          value: _vm.checkIn,
-                          callback: function($$v) {
-                            _vm.checkIn = $$v
-                          },
-                          expression: "checkIn"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "b-field",
-                    { attrs: { label: "Check Out", expanded: "" } },
-                    [
-                      _c("b-datepicker", {
-                        attrs: {
-                          placeholder: "Click to select date...",
-                          icon: "calendar-today"
-                        },
-                        model: {
-                          value: _vm.checkOut,
-                          callback: function($$v) {
-                            _vm.checkOut = $$v
-                          },
-                          expression: "checkOut"
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "button is-primary",
-                  on: { click: _vm.checkRooms }
-                },
-                [_vm._v("Check available rooms")]
-              ),
-              _vm._v(" "),
-              _vm.rooms.length > 0
-                ? _c("room-types-tabs", {
-                    attrs: { rooms: _vm.rooms },
-                    scopedSlots: _vm._u([
-                      {
-                        key: "default",
-                        fn: function(rooms) {
-                          return [
-                            _c(
-                              "div",
-                              { staticClass: "columns is-multiline" },
-                              _vm._l(rooms.rooms, function(room) {
-                                return _c(
-                                  "div",
-                                  { key: room.id, staticClass: "column is-2" },
-                                  [
-                                    _c(
-                                      "b-field",
-                                      [
-                                        _c(
-                                          "b-checkbox-button",
-                                          {
-                                            attrs: {
-                                              "native-value": room,
-                                              type: "is-info",
-                                              size: "is-medium"
-                                            },
-                                            model: {
-                                              value: _vm.selectedRooms,
-                                              callback: function($$v) {
-                                                _vm.selectedRooms = $$v
-                                              },
-                                              expression: "selectedRooms"
-                                            }
-                                          },
-                                          [
-                                            _vm._v(
-                                              "\n                                    " +
-                                                _vm._s(room.name) +
-                                                "\n                                "
-                                            )
-                                          ]
-                                        )
-                                      ],
-                                      1
-                                    )
-                                  ],
-                                  1
-                                )
-                              }),
-                              0
-                            )
-                          ]
-                        }
-                      }
-                    ])
-                  })
-                : _vm._e()
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("footer", { staticClass: "modal-card-foot" }, [
-            _c(
-              "button",
-              {
-                staticClass: "button",
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.$parent.close()
-                  }
-                }
-              },
-              [_vm._v("Close")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "button is-primary",
-                attrs: { disabled: !_vm.canSubmit },
-                on: { click: _vm.submit }
-              },
-              [_vm._v("Submit")]
-            )
-          ])
-        ]
-      )
-    ]
-  )
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("header", { staticClass: "modal-card-head" }, [
-      _c("p", { staticClass: "modal-card-title" }, [_vm._v("Add Reservation")])
     ])
   }
 ]
@@ -57731,6 +57749,252 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/CreateReservation.vue?vue&type=template&id=23192621&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/CreateReservation.vue?vue&type=template&id=23192621& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("section", [
+    _c("div", { staticClass: "columns" }, [
+      _c("div", { staticClass: "column is-6" }, [
+        _c(
+          "div",
+          { staticClass: "box" },
+          [
+            _c("div", { staticClass: "card-header-title is-centered" }, [
+              _vm._v("Reservation Details")
+            ]),
+            _vm._v(" "),
+            _c(
+              "b-field",
+              { attrs: { label: "Guest" } },
+              [
+                _c("b-autocomplete", {
+                  attrs: {
+                    data: _vm.guests,
+                    field: "name",
+                    placeholder: "Guest name",
+                    loading: _vm.loadingGuests
+                  },
+                  on: {
+                    select: function(option) {
+                      return (_vm.selectedGuest = option)
+                    }
+                  },
+                  nativeOn: {
+                    keyup: function($event) {
+                      return _vm.getAsyncGuests($event)
+                    }
+                  },
+                  model: {
+                    value: _vm.name,
+                    callback: function($$v) {
+                      _vm.name = $$v
+                    },
+                    expression: "name"
+                  }
+                })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "b-field",
+              { attrs: { grouped: "" } },
+              [
+                _c(
+                  "b-field",
+                  { attrs: { label: "Check In", expanded: "" } },
+                  [
+                    _c("b-datepicker", {
+                      attrs: {
+                        placeholder: "Click to select date...",
+                        icon: "calendar-today",
+                        "min-date": this.$moment()
+                          .subtract(1, "day")
+                          .toDate()
+                      },
+                      on: { input: _vm.clearRooms },
+                      model: {
+                        value: _vm.checkIn,
+                        callback: function($$v) {
+                          _vm.checkIn = $$v
+                        },
+                        expression: "checkIn"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-field",
+                  { attrs: { label: "Check Out", expanded: "" } },
+                  [
+                    _c("b-datepicker", {
+                      attrs: {
+                        placeholder: "Click to select date...",
+                        icon: "calendar-today",
+                        "min-date": this.$moment(_vm.checkIn)
+                          .add(1, "day")
+                          .toDate()
+                      },
+                      on: { input: _vm.clearRooms },
+                      model: {
+                        value: _vm.checkOut,
+                        callback: function($$v) {
+                          _vm.checkOut = $$v
+                        },
+                        expression: "checkOut"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "button is-primary",
+                attrs: { disabled: !_vm.hasDates },
+                on: { click: _vm.checkRooms }
+              },
+              [
+                _vm._v(
+                  "\n                    Check available rooms\n                "
+                )
+              ]
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "box" },
+          [
+            _c("div", { staticClass: "card-header-title is-centered" }, [
+              _vm._v("Rooms")
+            ]),
+            _vm._v(" "),
+            _vm.rooms.length > 0
+              ? _c("room-types-tabs", {
+                  attrs: { rooms: _vm.rooms },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "default",
+                      fn: function(rooms) {
+                        return [
+                          _c(
+                            "div",
+                            { staticClass: "columns is-multiline" },
+                            _vm._l(rooms.rooms, function(room) {
+                              return _c(
+                                "div",
+                                { staticClass: "column is-2" },
+                                [
+                                  _c(
+                                    "b-field",
+                                    { key: room.id },
+                                    [
+                                      _c(
+                                        "b-checkbox-button",
+                                        {
+                                          attrs: {
+                                            "native-value": room.name,
+                                            type: "is-info",
+                                            size: "is-medium"
+                                          },
+                                          model: {
+                                            value: _vm.selectedRooms,
+                                            callback: function($$v) {
+                                              _vm.selectedRooms = $$v
+                                            },
+                                            expression: "selectedRooms"
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                        " +
+                                              _vm._s(room.name) +
+                                              "\n                                    "
+                                          )
+                                        ]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            }),
+                            0
+                          ),
+                          _vm._v(" "),
+                          rooms.rooms.length === 0
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "content has-text-grey has-text-centered"
+                                },
+                                [_c("p", [_vm._v("No available rooms.")])]
+                              )
+                            : _vm._e()
+                        ]
+                      }
+                    }
+                  ])
+                })
+              : _vm._e()
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "column" },
+        [
+          _c("invoice-box", {
+            attrs: { rooms: _vm.parsedSelectedRooms, quantity: _vm.quantity }
+          })
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass: "button is-primary",
+        attrs: { type: "button", disabled: !_vm.canSubmit },
+        on: { click: _vm.submit }
+      },
+      [_vm._v("Submit")]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/Guest.vue?vue&type=template&id=447ea849&scoped=true&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/Guest.vue?vue&type=template&id=447ea849&scoped=true& ***!
@@ -58102,7 +58366,7 @@ var render = function() {
                       {
                         staticClass: "button is-medium is-info is-outlined",
                         staticStyle: { "border-radius": "50%" },
-                        on: { click: _vm.openEditGuestModal }
+                        on: { click: _vm.editReservation }
                       },
                       [
                         _c("b-icon", {
@@ -58335,7 +58599,7 @@ var render = function() {
               {
                 staticClass: "button is-medium is-info is-outlined",
                 staticStyle: { "border-radius": "50%" },
-                on: { click: _vm.openNewReservationModal }
+                on: { click: _vm.createReservation }
               },
               [_c("b-icon", { attrs: { icon: "plus", size: "is-small" } })],
               1
@@ -72599,6 +72863,75 @@ if (token) {
 
 /***/ }),
 
+/***/ "./resources/js/components/InvoiceBox.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/InvoiceBox.vue ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _InvoiceBox_vue_vue_type_template_id_9a31b5ee___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./InvoiceBox.vue?vue&type=template&id=9a31b5ee& */ "./resources/js/components/InvoiceBox.vue?vue&type=template&id=9a31b5ee&");
+/* harmony import */ var _InvoiceBox_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./InvoiceBox.vue?vue&type=script&lang=js& */ "./resources/js/components/InvoiceBox.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _InvoiceBox_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _InvoiceBox_vue_vue_type_template_id_9a31b5ee___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _InvoiceBox_vue_vue_type_template_id_9a31b5ee___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/InvoiceBox.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/InvoiceBox.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/InvoiceBox.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_InvoiceBox_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./InvoiceBox.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/InvoiceBox.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_InvoiceBox_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/InvoiceBox.vue?vue&type=template&id=9a31b5ee&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/InvoiceBox.vue?vue&type=template&id=9a31b5ee& ***!
+  \*******************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InvoiceBox_vue_vue_type_template_id_9a31b5ee___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./InvoiceBox.vue?vue&type=template&id=9a31b5ee& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/InvoiceBox.vue?vue&type=template&id=9a31b5ee&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InvoiceBox_vue_vue_type_template_id_9a31b5ee___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InvoiceBox_vue_vue_type_template_id_9a31b5ee___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Navbar.vue":
 /*!********************************************!*\
   !*** ./resources/js/components/Navbar.vue ***!
@@ -73016,75 +73349,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/reservations/ReservationForm.vue":
-/*!******************************************************************!*\
-  !*** ./resources/js/components/reservations/ReservationForm.vue ***!
-  \******************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ReservationForm.vue?vue&type=template&id=2e995073& */ "./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073&");
-/* harmony import */ var _ReservationForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ReservationForm.vue?vue&type=script&lang=js& */ "./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ReservationForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/reservations/ReservationForm.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************!*\
-  !*** ./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ReservationForm.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reservations/ReservationForm.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073&":
-/*!*************************************************************************************************!*\
-  !*** ./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073& ***!
-  \*************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ReservationForm.vue?vue&type=template&id=2e995073& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reservations/ReservationForm.vue?vue&type=template&id=2e995073&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationForm_vue_vue_type_template_id_2e995073___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
 /***/ "./resources/js/components/roomTypes/RoomTypeForm.vue":
 /*!************************************************************!*\
   !*** ./resources/js/components/roomTypes/RoomTypeForm.vue ***!
@@ -73257,6 +73521,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _views_Guest__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./views/Guest */ "./resources/js/views/Guest.vue");
 /* harmony import */ var _views_Reservations__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./views/Reservations */ "./resources/js/views/Reservations.vue");
 /* harmony import */ var _views_Reservation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./views/Reservation */ "./resources/js/views/Reservation.vue");
+/* harmony import */ var _views_CreateReservation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./views/CreateReservation */ "./resources/js/views/CreateReservation.vue");
+
 
 
 
@@ -73280,12 +73546,88 @@ var routes = [{
   path: '/reservations',
   component: _views_Reservations__WEBPACK_IMPORTED_MODULE_5__["default"]
 }, {
+  path: '/reservations/create',
+  component: _views_CreateReservation__WEBPACK_IMPORTED_MODULE_7__["default"]
+}, {
   path: '/reservations/:id',
   component: _views_Reservation__WEBPACK_IMPORTED_MODULE_6__["default"]
+}, {
+  path: '/reservations/:id/edit',
+  component: _views_CreateReservation__WEBPACK_IMPORTED_MODULE_7__["default"],
+  name: 'EditReservation'
 }];
 /* harmony default export */ __webpack_exports__["default"] = (new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   routes: routes
 }));
+
+/***/ }),
+
+/***/ "./resources/js/views/CreateReservation.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/views/CreateReservation.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CreateReservation_vue_vue_type_template_id_23192621___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateReservation.vue?vue&type=template&id=23192621& */ "./resources/js/views/CreateReservation.vue?vue&type=template&id=23192621&");
+/* harmony import */ var _CreateReservation_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateReservation.vue?vue&type=script&lang=js& */ "./resources/js/views/CreateReservation.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CreateReservation_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CreateReservation_vue_vue_type_template_id_23192621___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CreateReservation_vue_vue_type_template_id_23192621___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/views/CreateReservation.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/views/CreateReservation.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/views/CreateReservation.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateReservation_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CreateReservation.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/CreateReservation.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateReservation_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/views/CreateReservation.vue?vue&type=template&id=23192621&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/views/CreateReservation.vue?vue&type=template&id=23192621& ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateReservation_vue_vue_type_template_id_23192621___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CreateReservation.vue?vue&type=template&id=23192621& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/CreateReservation.vue?vue&type=template&id=23192621&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateReservation_vue_vue_type_template_id_23192621___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateReservation_vue_vue_type_template_id_23192621___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
