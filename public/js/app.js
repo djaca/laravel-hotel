@@ -2645,6 +2645,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2654,7 +2657,7 @@ __webpack_require__.r(__webpack_exports__);
     RoomTypesTabs: _components_RoomTypesTabs__WEBPACK_IMPORTED_MODULE_0__["default"],
     InvoiceBox: _components_InvoiceBox__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  props: ['reservation'],
+  props: ['id'],
   data: function data() {
     return {
       loadingGuests: false,
@@ -2686,9 +2689,10 @@ __webpack_require__.r(__webpack_exports__);
         guest_id: this.selectedGuest ? this.selectedGuest.id : '',
         start_date: this.checkIn ? this.$moment(this.checkIn).format('YYYY-MM-DD') : null,
         end_date: this.checkIn ? this.$moment(this.checkOut).format('YYYY-MM-DD') : null,
-        rooms: this.selectedRooms.map(function (r) {
+        rooms: this.parsedSelectedRooms.map(function (r) {
           return r.id;
-        })
+        }),
+        _method: this.isEditing ? 'patch' : 'post'
       };
     },
     canSubmit: function canSubmit() {
@@ -2698,7 +2702,7 @@ __webpack_require__.r(__webpack_exports__);
       return !!this.formData.start_date && !!this.formData.end_date;
     },
     isEditing: function isEditing() {
-      return !!this.reservation;
+      return !!this.id;
     }
   },
   methods: {
@@ -2740,7 +2744,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (_ref3) {
         var data = _ref3.data;
-        _this3.rooms = data;
+        data.forEach(function (room) {
+          _this3.rooms.push(room);
+        });
       }).catch(function (err) {
         return console.log(err);
       });
@@ -2748,12 +2754,18 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var _this4 = this;
 
-      axios.post('/api/reservations', this.formData).then(function (_ref4) {
+      var uri = '/api/reservations';
+
+      if (this.isEditing) {
+        uri += "/".concat(this.id);
+      }
+
+      axios.post(uri, this.formData).then(function (_ref4) {
         var data = _ref4.data;
 
-        _this4.$emit('new-reservation', data.reservation);
-
-        _this4.$parent.close();
+        if (!_this4.isEditing) {
+          _this4.resetForm();
+        }
 
         _this4.$toast.open({
           message: data.message,
@@ -2766,12 +2778,50 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    populateFields: function populateFields() {// this.getRerservation()
+    populateFields: function populateFields(data) {
+      var _this5 = this;
+
+      this.checkIn = new Date(data.start_date);
+      this.checkOut = new Date(data.end_date);
+      this.selectedGuest = data.guest;
+      this.name = data.guest.name; // because of method 'clearRooms' triggered on dates input
+
+      this.$nextTick().then(function () {
+        _this5.checkRooms();
+
+        _this5.selectedRooms = data.rooms.map(function (r) {
+          return r.name;
+        });
+        data.rooms.forEach(function (room) {
+          _this5.rooms.push(room);
+        });
+      });
+    },
+    resetForm: function resetForm() {
+      this.guests = [];
+      this.selectedGuest = null;
+      this.name = '';
+      this.checkIn = null;
+      this.checkOut = null;
+      this.activeTab = 0;
+      this.selectedRooms = [];
+      this.rooms = [];
     }
   },
   mounted: function mounted() {
-    if (this.$route.name === 'EditReservation') {
-      this.populateFields();
+    var _this6 = this;
+
+    if (this.isEditing) {
+      axios.get("/api/reservations/".concat(this.$route.params.id)).then(function (_ref5) {
+        var data = _ref5.data;
+
+        _this6.populateFields(data);
+      }).catch(function (err) {
+        _this6.$toast.open({
+          message: err.response.data.message,
+          type: 'is-danger'
+        });
+      });
     }
   }
 });
@@ -57784,7 +57834,8 @@ var render = function() {
                     data: _vm.guests,
                     field: "name",
                     placeholder: "Guest name",
-                    loading: _vm.loadingGuests
+                    loading: _vm.loadingGuests,
+                    disabled: _vm.isEditing
                   },
                   on: {
                     select: function(option) {
@@ -57822,7 +57873,8 @@ var render = function() {
                         icon: "calendar-today",
                         "min-date": this.$moment()
                           .subtract(1, "day")
-                          .toDate()
+                          .toDate(),
+                        disabled: _vm.isEditing
                       },
                       on: { input: _vm.clearRooms },
                       model: {
@@ -57847,7 +57899,8 @@ var render = function() {
                         icon: "calendar-today",
                         "min-date": this.$moment(_vm.checkIn)
                           .add(1, "day")
-                          .toDate()
+                          .toDate(),
+                        disabled: _vm.isEditing
                       },
                       on: { input: _vm.clearRooms },
                       model: {
@@ -57869,7 +57922,7 @@ var render = function() {
               "button",
               {
                 staticClass: "button is-primary",
-                attrs: { disabled: !_vm.hasDates },
+                attrs: { disabled: !_vm.hasDates || _vm.isEditing },
                 on: { click: _vm.checkRooms }
               },
               [
@@ -73554,7 +73607,8 @@ var routes = [{
 }, {
   path: '/reservations/:id/edit',
   component: _views_CreateReservation__WEBPACK_IMPORTED_MODULE_7__["default"],
-  name: 'EditReservation'
+  name: 'EditReservation',
+  props: true
 }];
 /* harmony default export */ __webpack_exports__["default"] = (new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   routes: routes

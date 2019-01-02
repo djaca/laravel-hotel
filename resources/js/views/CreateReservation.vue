@@ -14,6 +14,7 @@
                             :loading="loadingGuests"
                             @keyup.native="getAsyncGuests"
                             @select="option => selectedGuest = option"
+                            :disabled="isEditing"
                         >
                         </b-autocomplete>
                     </b-field>
@@ -26,6 +27,7 @@
                                 icon="calendar-today"
                                 :min-date="this.$moment().subtract(1, 'day').toDate()"
                                 @input="clearRooms"
+                                :disabled="isEditing"
                             >
                             </b-datepicker>
                         </b-field>
@@ -37,6 +39,7 @@
                                 icon="calendar-today"
                                 :min-date="this.$moment(checkIn).add(1, 'day').toDate()"
                                 @input="clearRooms"
+                                :disabled="isEditing"
                             >
                             </b-datepicker>
                         </b-field>
@@ -44,7 +47,7 @@
 
                     <button
                         class="button is-primary"
-                        :disabled="!hasDates"
+                        :disabled="!hasDates || isEditing"
                         @click="checkRooms"
                     >
                         Check available rooms
@@ -97,7 +100,7 @@
 
         components: {RoomTypesTabs, InvoiceBox},
 
-        props: ['reservation'],
+        props: ['id'],
 
         data () {
             return {
@@ -127,7 +130,8 @@
                     guest_id: this.selectedGuest ? this.selectedGuest.id : '',
                     start_date: this.checkIn ? this.$moment(this.checkIn).format('YYYY-MM-DD') : null,
                     end_date: this.checkIn ? this.$moment(this.checkOut).format('YYYY-MM-DD') : null,
-                    rooms: this.selectedRooms.map(r => r.id)
+                    rooms: this.parsedSelectedRooms.map(r => r.id),
+                    _method: this.isEditing ? 'patch' : 'post'
                 }
             },
 
@@ -140,7 +144,7 @@
             },
 
             isEditing () {
-                return !!this.reservation
+                return !!this.id
             },
         },
 
@@ -184,17 +188,25 @@
                     }
                 })
                     .then(({data}) => {
-                        this.rooms = data
+                        data.forEach(room => {
+                            this.rooms.push(room)
+                        })
                     })
                     .catch(err => console.log(err))
             },
 
             submit () {
-                axios.post('/api/reservations', this.formData)
-                    .then(({data}) => {
-                        this.$emit('new-reservation', data.reservation)
+                let uri = '/api/reservations'
 
-                        this.$parent.close()
+                if (this.isEditing) {
+                    uri += `/${this.id}`
+                }
+
+                axios.post(uri, this.formData)
+                    .then(({data}) => {
+                        if (!this.isEditing) {
+                            this.resetForm()
+                        }
 
                         this.$toast.open({
                             message: data.message,
@@ -209,14 +221,47 @@
                     })
             },
 
-            populateFields () {
-                // this.getRerservation()
+            populateFields (data) {
+                this.checkIn = new Date(data.start_date)
+                this.checkOut = new Date(data.end_date)
+                this.selectedGuest = data.guest
+                this.name = data.guest.name
+
+                // because of method 'clearRooms' triggered on dates input
+                this.$nextTick()
+                    .then(() => {
+                        this.checkRooms()
+                        this.selectedRooms = data.rooms.map(r => r.name)
+                        data.rooms.forEach(room => {
+                            this.rooms.push(room)
+                        })
+                    })
+            },
+
+            resetForm () {
+                this.guests = []
+                this.selectedGuest = null
+                this.name = ''
+                this.checkIn = null
+                this.checkOut = null
+                this.activeTab = 0
+                this.selectedRooms = []
+                this.rooms = []
             }
         },
 
         mounted () {
-            if (this.$route.name === 'EditReservation') {
-                this.populateFields()
+            if (this.isEditing) {
+                axios.get(`/api/reservations/${this.$route.params.id}`)
+                    .then(({data}) => {
+                        this.populateFields(data)
+                    })
+                    .catch(err => {
+                        this.$toast.open({
+                            message: err.response.data.message,
+                            type: 'is-danger'
+                        })
+                    })
             }
         }
     }

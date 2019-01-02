@@ -39,7 +39,8 @@ const routes = [
     {
         path: '/reservations/:id/edit',
         component: CreateReservation,
-        name: 'EditReservation'
+        name: 'EditReservation',
+        props: true
     },
 ]
 

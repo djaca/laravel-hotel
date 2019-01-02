@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Guest;
 use App\Reservation;
 use App\Room;
+use App\RoomType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -28,7 +29,7 @@ class ReservationTest extends TestCase
         $this->postJson('/api/reservations', $attributes)
              ->assertJson([
                 'status'      => 'success',
-                'message'     => 'Room created successfully',
+                'message'     => 'Reservation created successfully',
                 'reservation' => [
                     'guest_id'   => $guest->id,
                     'start_date' => now()->toDateString(),
@@ -46,6 +47,32 @@ class ReservationTest extends TestCase
         $this->assertDatabaseHas('reservation_room', [
             'reservation_id' => $reservation->id,
             'room_id' => $reservedRooms[1]->id
+        ]);
+    }
+
+    /** @test */
+    public function can_change_rooms_in_created_reservation()
+    {
+        factory(RoomType::class, 2)->create()->each(function ($type) {
+            factory(Room::class)->create(['type_id' => $type->id]);
+        });
+
+        Room::find(1)->update(['available' => false]);
+        $reservation = factory(Reservation::class)->create();
+        $reservation->rooms()->attach(1);
+
+        $this->patchJson("/api/reservations/{$reservation->id}", [
+            'rooms' => [2]
+        ]);
+
+        $this->assertDatabaseHas('reservation_room', [
+            'reservation_id' => $reservation->id,
+            'room_id' => 2
+        ]);
+
+        $this->assertDatabaseMissing('reservation_room', [
+            'reservation_id' => $reservation->id,
+            'room_id' => 1
         ]);
     }
 }

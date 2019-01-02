@@ -38,7 +38,20 @@ class ReservationsController extends Controller
 
         return response()->json([
             'status'      => 'success',
-            'message'     => 'Room created successfully',
+            'message'     => 'Reservation created successfully',
+            'reservation' => $reservation
+        ]);
+    }
+
+    public function update(Reservation $reservation)
+    {
+        $reservation->rooms()->sync(request('rooms'));
+
+        $reservation->load('guest', 'rooms');
+
+        return response()->json([
+            'status'      => 'success',
+            'message'     => 'Reservation updated successfully',
             'reservation' => $reservation
         ]);
     }
