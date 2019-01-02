@@ -9,7 +9,22 @@ class ReservationsController extends Controller
 {
     public function index()
     {
-        $reservations = Reservation::with('guest', 'rooms')->paginate(10);
+        if (request()->has('day')) {
+            return response()->json([
+                [
+                    'label' => 'Arrivals',
+                    'data' => Reservation::with('guest', 'rooms')->whereDate('start_date', request('day'))->get()
+                ],
+                [
+                    'label' => 'Departures',
+                    'data' => Reservation::with('guest', 'rooms')->whereDate('end_date', request('day'))->get()
+                ]
+            ]);
+        }
+
+        $reservations = Reservation::with('guest', 'rooms');
+
+        $reservations = $reservations->paginate(10);
 
         return response()->json($reservations);
     }
