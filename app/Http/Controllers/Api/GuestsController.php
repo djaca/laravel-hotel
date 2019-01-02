@@ -11,6 +11,12 @@ class GuestsController extends Controller
     {
         $guests = Guest::paginate(10);
 
+        if (request()->has('search')) {
+            $guests = Guest::where('first_name', 'LIKE', '%' . request('search') . '%')
+                 ->orWhere('last_name', 'LIKE', '%' . request('search') . '%')
+                 ->get();
+        }
+
         return response()->json($guests);
     }
 

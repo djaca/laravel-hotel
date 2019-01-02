@@ -6,40 +6,37 @@
             <div class="column is-8">
                 <div class="box">
                     <div class="card-header-title is-centered">Rooms</div>
-                    <b-tabs v-model="activeTab" position="is-centered" v-if="tabs.length > 0">
-                        <template v-for="tab in tabs">
-                            <b-tab-item :label="tab.label" :key="tab.id">
-                                <b-table :data="tab.data" narrowed striped>
-                                    <template slot-scope="props">
-                                        <b-table-column field="id" label="ID" width="60">
-                                            {{ props.row.id }}
-                                        </b-table-column>
 
-                                        <b-table-column field="name" label="Name" width="200">
-                                            {{ props.row.name }}
-                                        </b-table-column>
+                    <room-types-tabs :rooms="rooms">
+                        <template slot-scope="rooms">
+                            <b-table :data="rooms.rooms" narrowed striped>
+                                <template slot-scope="props">
+                                    <b-table-column field="id" label="ID" width="60">
+                                        {{ props.row.id }}
+                                    </b-table-column>
 
-                                        <b-table-column field="available" label="Status" centered>
-                                            <b-tag :type="roomStatusColor(props.row.available)">{{
-                                                roomStatusText(props.row.available) }}
-                                            </b-tag>
-                                        </b-table-column>
+                                    <b-table-column field="name" label="Name" width="200">
+                                        {{ props.row.name }}
+                                    </b-table-column>
 
-                                        <b-table-column centered>
-                                            <button class="button is-small is-outlined is-primary"
-                                                    @click="openEditRoomModal(props.row)">Edit
-                                            </button>
-                                            <button class="button is-small is-outlined is-danger"
-                                                    @click="confirmDelete(props.row)">Delete
-                                            </button>
-                                        </b-table-column>
-                                    </template>
-                                </b-table>
-                            </b-tab-item>
+                                    <b-table-column field="available" label="Status" centered>
+                                        <b-tag :type="roomStatusColor(props.row.available)">{{
+                                            roomStatusText(props.row.available) }}
+                                        </b-tag>
+                                    </b-table-column>
+
+                                    <b-table-column centered>
+                                        <button class="button is-small is-outlined is-primary"
+                                                @click="openEditRoomModal(props.row)">Edit
+                                        </button>
+                                        <button class="button is-small is-outlined is-danger"
+                                                @click="confirmDelete(props.row)">Delete
+                                        </button>
+                                    </b-table-column>
+                                </template>
+                            </b-table>
                         </template>
-                    </b-tabs>
-
-                    <div style="margin-bottom: 3rem;" v-else>Sorry, no rooms...</div>
+                    </room-types-tabs>
 
                     <button
                         class="button is-medium is-info is-outlined"
@@ -77,64 +74,29 @@
 </template>
 
 <script>
+    import RoomTypesTabs from './../components/RoomTypesTabs'
     import RoomForm from './../components/rooms/RoomForm'
-    import groupBy from 'lodash/groupBy'
     import countBy from 'lodash/countBy'
 
     export default {
         name: 'Rooms',
 
-        components: {RoomForm},
+        components: {RoomTypesTabs, RoomForm},
 
         data () {
             return {
                 loading: false,
-                activeTab: 0,
-                types: [],
                 rooms: []
             }
         },
 
         computed: {
-            tabs () {
-                let tabs = this.types.map(t => {
-                    return {
-                        label: t.name,
-                        id: t.id,
-                        data: []
-                    }
-                })
-
-                let grouped = groupBy(this.rooms, room => room.type.id)
-
-                tabs.forEach(t => {
-                    if (t.id in grouped) {
-                        t.data = grouped[t.id]
-                    }
-                })
-
-                return tabs
-            },
-
             stats () {
                 return countBy(this.rooms, room => room['available'] ? 'available' : 'occupied')
             },
         },
 
         methods: {
-            getTypes () {
-                axios.get('/api/room-types')
-                    .then(({data}) => {
-                        this.types = data
-                    })
-                    .catch(err => {
-                        this.$toast.open({
-                            message: err.response.data.message,
-                            type: 'is-danger'
-                        })
-                    })
-            },
-
             getRooms () {
                 this.loading = true
 
@@ -163,10 +125,6 @@
                         'new-room': room => {
                             this.rooms.push(room)
                         }
-                    },
-                    props: {
-                        types: this.types,
-                        type_id: this.tabs[this.activeTab] ? this.tabs[this.activeTab].id : null
                     }
                 })
             },
@@ -183,9 +141,7 @@
                         }
                     },
                     props: {
-                        types: this.types,
                         room,
-                        type_id: this.tabs[this.activeTab].id
                     }
                 })
             },
@@ -245,7 +201,6 @@
         },
 
         mounted () {
-            this.getTypes()
             this.getRooms()
         }
     }

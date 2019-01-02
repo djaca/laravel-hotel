@@ -92,12 +92,13 @@
 
         components: {RoomTypeForm},
 
-        props: ['type_id', 'room', 'types'],
+        props: ['room'],
 
         data () {
             return {
                 loadingTypes: false,
-                type: this.types.find(t => t.id === this.type_id),
+                types: [],
+                type: null,
                 name: '',
                 comment: '',
                 available: true
@@ -192,9 +193,25 @@
 
                 this.addRoom ()
             },
+
+            getTypes () {
+                axios.get('/api/room-types')
+                    .then(({data}) => {
+                        this.types = data
+                        this.type = this.types.find(t => t.id === this.room.type_id)
+                    })
+                    .catch(err => {
+                        this.$toast.open({
+                            message: err.response.data.message,
+                            type: 'is-danger'
+                        })
+                    })
+            },
         },
 
         mounted () {
+            this.getTypes()
+
             if (this.isEditing) {
                 this.name = this.room.name
                 this.comment = this.room.comment

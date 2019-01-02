@@ -9,7 +9,13 @@ class RoomsController extends Controller
 {
     public function index()
     {
-        $rooms = Room::with('type')->get();
+        $rooms = Room::with('type');
+
+        if (request()->has('start_date') && request()->has('end_date')) {
+            $rooms->getAvailableRooms(request()->only(['start_date', 'end_date']));
+        }
+
+        $rooms = $rooms->get();
 
         return response()->json($rooms);
     }
