@@ -20,12 +20,16 @@ class DatabaseSeeder extends Seeder
 
         factory(\App\Reservation::class)->create([
             'start_date' => now()->subDays(2)->toDateString(),
-            'end_date' => now()->toDateString()
-        ])->rooms()->attach(1);
+            'end_date' => now()->toDateString(),
+            'created_at' => now()->subDays(3),
+            'updated_at' => now()->subDays(3),
+        ])->rooms()->attach(8);
 
         factory(\App\Reservation::class)->create([
             'start_date' => now()->toDateString(),
             'end_date'   => now()->addDays(3)->toDateString(),
+            'created_at' => now()->subDays(3),
+            'updated_at' => now()->subDays(3),
         ])->rooms()->attach(1);
 
         factory(\App\Reservation::class)->create([

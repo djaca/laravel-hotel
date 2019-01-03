@@ -9,10 +9,13 @@
                                 <div class="columns is-multiline">
                                     <b-loading :is-full-page="false" :active.sync="loading"></b-loading>
 
-                                    <div v-if="tab.data.length === 0" style="height: 10rem">No {{ tab.label.toLowerCase() }}</div>
+                                    <div v-if="tab.data.length === 0" style="height: 10rem">No {{
+                                        tab.label.toLowerCase() }}
+                                    </div>
 
                                     <div class="column is-3" v-for="(data, dataIndex) in tab.data">
-                                        <v-card :reservation="data" :key="dataIndex" @click.native="showReservation(data)"></v-card>
+                                        <v-card :reservation="data" :key="dataIndex"
+                                                @click.native="showReservation(data)"></v-card>
                                     </div>
                                 </div>
                             </b-tab-item>
@@ -20,19 +23,24 @@
                     </b-tabs>
                 </div>
             </div>
+
+            <div class="column is-4">
+                <rooms-stats></rooms-stats>
+            </div>
         </div>
     </section>
 </template>
 
 <script>
     import VCard from './../components/VCard'
+    import RoomsStats from './../components/RoomsStats'
 
     export default {
         name: 'Home',
 
-        components: {VCard},
+        components: {VCard, RoomsStats},
 
-        data() {
+        data () {
             return {
                 loading: false,
                 activeTab: 0,
@@ -50,8 +58,8 @@
         },
 
         methods: {
-            showReservation(data) {
-                this.$router.push({ path: `/reservations/${data.id}` })
+            showReservation (data) {
+                this.$router.push({path: `/reservations/${data.id}`})
             },
 
             getReservations () {
