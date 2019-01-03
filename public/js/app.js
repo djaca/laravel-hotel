@@ -3289,17 +3289,25 @@ __webpack_require__.r(__webpack_exports__);
     return {
       loading: false,
       activeTab: 0,
-      tabs: [{
-        label: 'Arrivals',
-        data: []
-      }, {
-        label: 'Departures',
-        data: []
-      }],
+      reservations: null,
       stats: []
     };
   },
   computed: {
+    tabs: function tabs() {
+      if (this.reservations) {
+        var tabs = [];
+
+        for (var key in this.reservations) {
+          tabs.push({
+            label: key,
+            data: this.reservations[key]
+          });
+        }
+
+        return tabs;
+      }
+    },
     rows: function rows() {
       return [{
         label: 'Rooms booked today:',
@@ -3313,6 +3321,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    capitalizeFirstLetter: function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
     showReservation: function showReservation(data) {
       this.$router.push({
         path: "/reservations/".concat(data.id)
@@ -3324,7 +3335,7 @@ __webpack_require__.r(__webpack_exports__);
       this.loading = true;
       axios.get("/api/reservations?day=".concat(this.$moment().format('YYYY-MM-DD'))).then(function (_ref) {
         var data = _ref.data;
-        _this.tabs = data;
+        _this.reservations = data;
       }).catch(function (err) {
         return console.log(err);
       }).finally(function () {
@@ -58722,7 +58733,10 @@ var render = function() {
                   return [
                     _c(
                       "b-tab-item",
-                      { key: tabIndex, attrs: { label: tab.label } },
+                      {
+                        key: tabIndex,
+                        attrs: { label: _vm.capitalizeFirstLetter(tab.label) }
+                      },
                       [
                         _c(
                           "div",
@@ -58746,9 +58760,9 @@ var render = function() {
                                   { staticStyle: { height: "10rem" } },
                                   [
                                     _vm._v(
-                                      "No " +
-                                        _vm._s(tab.label.toLowerCase()) +
-                                        "\n                                "
+                                      "\n                                    No " +
+                                        _vm._s(tab.label) +
+                                        " today\n                                "
                                     )
                                   ]
                                 )

@@ -5,12 +5,12 @@
                 <div class="box">
                     <b-tabs v-model="activeTab" type="is-toggle-rounded">
                         <template v-for="(tab, tabIndex) in tabs">
-                            <b-tab-item :label="tab.label" :key="tabIndex">
+                            <b-tab-item :label="capitalizeFirstLetter(tab.label)" :key="tabIndex">
                                 <div class="columns is-multiline">
                                     <b-loading :is-full-page="false" :active.sync="loading"></b-loading>
 
-                                    <div v-if="tab.data.length === 0" style="height: 10rem">No {{
-                                        tab.label.toLowerCase() }}
+                                    <div v-if="tab.data.length === 0" style="height: 10rem">
+                                        No {{ tab.label }} today
                                     </div>
 
                                     <div class="column is-3" v-for="(data, dataIndex) in tab.data">
@@ -44,21 +44,27 @@
             return {
                 loading: false,
                 activeTab: 0,
-                tabs: [
-                    {
-                        label: 'Arrivals',
-                        data: []
-                    },
-                    {
-                        label: 'Departures',
-                        data: []
-                    }
-                ],
+                reservations: null,
                 stats: []
             }
         },
 
         computed: {
+            tabs () {
+                if (this.reservations) {
+                    let tabs = []
+
+                    for (let key in this.reservations) {
+                        tabs.push({
+                            label: key,
+                            data: this.reservations[key]
+                        })
+                    }
+
+                    return tabs
+                }
+            },
+
             rows () {
                 return [
                     {
@@ -76,6 +82,10 @@
         },
 
         methods: {
+            capitalizeFirstLetter (string) {
+                return string.charAt(0).toUpperCase() + string.slice(1)
+            },
+
             showReservation (data) {
                 this.$router.push({path: `/reservations/${data.id}`})
             },
@@ -85,7 +95,7 @@
 
                 axios.get(`/api/reservations?day=${this.$moment().format('YYYY-MM-DD')}`)
                     .then(({data}) => {
-                        this.tabs = data
+                        this.reservations = data
                     })
                     .catch(err => console.log(err))
                     .finally(() => {

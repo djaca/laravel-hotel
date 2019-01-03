@@ -11,14 +11,8 @@ class ReservationsController extends Controller
     {
         if (request()->has('day')) {
             return response()->json([
-                [
-                    'label' => 'Arrivals',
-                    'data' => Reservation::with('guest', 'rooms')->whereDate('start_date', request('day'))->get()
-                ],
-                [
-                    'label' => 'Departures',
-                    'data' => Reservation::with('guest', 'rooms')->whereDate('end_date', request('day'))->get()
-                ]
+                'arrivals' => Reservation::with('guest', 'rooms')->whereDate('start_date', request('day'))->get(),
+                'departures' => Reservation::with('guest', 'rooms')->whereDate('end_date', request('day'))->get()
             ]);
         }
 
