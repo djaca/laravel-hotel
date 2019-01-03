@@ -22,6 +22,8 @@ Route::post('rooms', 'Api\RoomsController@store');
 Route::patch('rooms/{room}', 'Api\RoomsController@update');
 Route::delete('rooms/{room}', 'Api\RoomsController@destroy');
 
+Route::get('rooms/stats', 'Api\RoomsStatsController@index');
+
 Route::get('room-types', 'Api\RoomTypesController@index');
 Route::post('room-types', 'Api\RoomTypesController@store');
 
