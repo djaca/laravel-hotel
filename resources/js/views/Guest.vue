@@ -48,6 +48,34 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="box">
+                    <div class="card-header-title is-centered">Reservations History</div>
+
+                    <b-table :data="reservations">
+                        <template slot-scope="props">
+                            <b-table-column field="id" label="ID" width="60">
+                                {{ props.row.id }}
+                            </b-table-column>
+
+                            <b-table-column field="room" label="Room">
+                                <b-taglist>
+                                    <template v-for="room in props.row.rooms">
+                                        <b-tag type="is-primary">{{ room.name }}</b-tag>
+                                    </template>
+                                </b-taglist>
+                            </b-table-column>
+
+                            <b-table-column field="start_date" label="Check In" centered>
+                                {{ new Date(props.row.start_date).toLocaleDateString() }}
+                            </b-table-column>
+
+                            <b-table-column field="end_date" label="Check Out" centered>
+                                {{ new Date(props.row.end_date).toLocaleDateString() }}
+                            </b-table-column>
+                        </template>
+                    </b-table>
+                </div>
             </div>
         </div>
     </section>
@@ -62,7 +90,8 @@
         data () {
             return {
                 loading: false,
-                guest: null
+                guest: null,
+                reservations: [],
             }
         },
 
@@ -134,6 +163,19 @@
                     .finally(() => {
                         this.loading = false
                     })
+            },
+
+            getReservations () {
+                axios.get(`/api/reservations?guest=${this.$route.params.id}`)
+                    .then(({data}) => {
+                        this.reservations = data
+                    })
+                    .catch(err => {
+                        this.$toast.open({
+                            message: err.response.data.message,
+                            type: 'is-danger'
+                        })
+                    })
             }
         },
 
@@ -143,6 +185,7 @@
 
         mounted () {
             this.getGuest()
+            this.getReservations()
         }
     }
 </script>

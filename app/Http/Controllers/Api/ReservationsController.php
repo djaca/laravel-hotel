@@ -16,6 +16,15 @@ class ReservationsController extends Controller
             ]);
         }
 
+        if (request()->has('guest')) {
+            $reservations = Reservation::with('rooms')
+                                       ->where('guest_id', request('guest'))
+                                       ->orderBy('created_at', 'desc')
+                                       ->get();
+
+            return response()->json($reservations);
+        }
+
         $reservations = Reservation::with('guest', 'rooms');
 
         $reservations = $reservations->paginate(10);
