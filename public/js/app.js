@@ -2791,8 +2791,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 
@@ -58405,49 +58403,36 @@ var render = function() {
                       fn: function(rooms) {
                         return [
                           _c(
-                            "div",
-                            { staticClass: "columns is-multiline" },
+                            "b-field",
+                            { attrs: { grouped: "", "group-multiline": "" } },
                             _vm._l(rooms.rooms, function(room) {
                               return _c(
-                                "div",
-                                { staticClass: "column is-2" },
+                                "b-checkbox-button",
+                                {
+                                  key: room.id,
+                                  attrs: {
+                                    "native-value": room.name,
+                                    type: "is-info",
+                                    size: "is-medium"
+                                  },
+                                  model: {
+                                    value: _vm.selectedRooms,
+                                    callback: function($$v) {
+                                      _vm.selectedRooms = $$v
+                                    },
+                                    expression: "selectedRooms"
+                                  }
+                                },
                                 [
-                                  _c(
-                                    "b-field",
-                                    { key: room.id },
-                                    [
-                                      _c(
-                                        "b-checkbox-button",
-                                        {
-                                          attrs: {
-                                            "native-value": room.name,
-                                            type: "is-info",
-                                            size: "is-medium"
-                                          },
-                                          model: {
-                                            value: _vm.selectedRooms,
-                                            callback: function($$v) {
-                                              _vm.selectedRooms = $$v
-                                            },
-                                            expression: "selectedRooms"
-                                          }
-                                        },
-                                        [
-                                          _vm._v(
-                                            "\n                                        " +
-                                              _vm._s(room.name) +
-                                              "\n                                    "
-                                          )
-                                        ]
-                                      )
-                                    ],
-                                    1
+                                  _vm._v(
+                                    "\n                                " +
+                                      _vm._s(room.name) +
+                                      "\n                            "
                                   )
-                                ],
-                                1
+                                ]
                               )
                             }),
-                            0
+                            1
                           ),
                           _vm._v(" "),
                           rooms.rooms.length === 0

@@ -59,19 +59,17 @@
 
                     <room-types-tabs :rooms="rooms" v-if="rooms.length > 0">
                         <template slot-scope="rooms">
-                            <div class="columns is-multiline">
-                                <div class="column is-2" v-for="room in rooms.rooms">
-                                    <b-field :key="room.id">
-                                        <b-checkbox-button v-model="selectedRooms"
-                                                           :native-value="room.name"
-                                                           type="is-info"
-                                                           size="is-medium"
-                                        >
-                                            {{ room.name }}
-                                        </b-checkbox-button>
-                                    </b-field>
-                                </div>
-                            </div>
+                            <b-field grouped group-multiline>
+                                <b-checkbox-button v-for="room in rooms.rooms"
+                                                   :key="room.id"
+                                                   v-model="selectedRooms"
+                                                   :native-value="room.name"
+                                                   type="is-info"
+                                                   size="is-medium"
+                                >
+                                    {{ room.name }}
+                                </b-checkbox-button>
+                            </b-field>
 
                             <div class="content has-text-grey has-text-centered" v-if="rooms.rooms.length === 0">
                                 <p>No available rooms.</p>
