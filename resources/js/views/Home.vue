@@ -25,7 +25,7 @@
             </div>
 
             <div class="column is-4">
-                <rooms-stats></rooms-stats>
+                <stats-widget :rows="rows"></stats-widget>
             </div>
         </div>
     </section>
@@ -33,12 +33,12 @@
 
 <script>
     import VCard from './../components/VCard'
-    import RoomsStats from './../components/RoomsStats'
+    import StatsWidget from '../components/StatsWidget'
 
     export default {
         name: 'Home',
 
-        components: {VCard, RoomsStats},
+        components: {VCard, StatsWidget},
 
         data () {
             return {
@@ -52,6 +52,24 @@
                     {
                         label: 'Departures',
                         data: []
+                    }
+                ],
+                stats: []
+            }
+        },
+
+        computed: {
+            rows () {
+                return [
+                    {
+                        label: 'Rooms booked today:',
+                        type: 'is-primary',
+                        data: this.stats.bookedToday
+                    },
+                    {
+                        label: 'Pending rooms today:',
+                        type: 'is-info',
+                        data: this.stats.pendingRooms
                     }
                 ]
             }
@@ -73,15 +91,20 @@
                     .finally(() => {
                         this.loading = false
                     })
+            },
+
+            getStats () {
+                axios.get('/api/rooms/stats')
+                    .then(({data}) => {
+                        this.stats = data
+                    })
+                    .catch(err => console.log(err))
             }
         },
 
         mounted () {
             this.getReservations()
+            this.getStats()
         }
     }
 </script>
-
-<style scoped>
-
-</style>

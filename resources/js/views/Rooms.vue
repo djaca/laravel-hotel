@@ -48,26 +48,7 @@
                 </div>
             </div>
             <div class="column is-4">
-                <div class="box" v-if="stats">
-                    <div class="card-header-title is-centered">Stats</div>
-
-                    <table class="stats">
-                        <tbody>
-                        <tr>
-                            <td>Available rooms:</td>
-                            <td>
-                                <b-tag type="is-success">{{ stats.available || 0 }}</b-tag>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Occupied rooms:</td>
-                            <td>
-                                <b-tag type="is-danger">{{ stats.occupied || 0}}</b-tag>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <stats-widget :rows="rows"></stats-widget>
             </div>
         </div>
     </section>
@@ -76,12 +57,13 @@
 <script>
     import RoomTypesTabs from './../components/RoomTypesTabs'
     import RoomForm from './../components/rooms/RoomForm'
+    import StatsWidget from '../components/StatsWidget'
     import countBy from 'lodash/countBy'
 
     export default {
         name: 'Rooms',
 
-        components: {RoomTypesTabs, RoomForm},
+        components: {RoomTypesTabs, RoomForm, StatsWidget},
 
         data () {
             return {
@@ -91,9 +73,22 @@
         },
 
         computed: {
-            stats () {
-                return countBy(this.rooms, room => room['available'] ? 'available' : 'occupied')
-            },
+            rows () {
+                let stats = countBy(this.rooms, room => room['available'] ? 'available' : 'occupied')
+
+                return [
+                    {
+                        label: 'Available rooms:',
+                        type: 'is-success',
+                        data: stats.available
+                    },
+                    {
+                        label: 'Occupied rooms:',
+                        type: 'is-danger',
+                        data: stats.occupied
+                    }
+                ]
+            }
         },
 
         methods: {
